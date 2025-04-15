@@ -10,7 +10,7 @@ export default function IndexPage() {
     <div className="bg-gradient-to-t relative h-screen w-screen">
       <Head>
         <title>Book Sommerhus</title>
-        <link rel="icon" href="/favicon.ico" />
+        <link rel="icon" href="/favicon.ico"/>
       </Head>
       <img
         className="absolute inset-0 w-full h-full object-cover mix-blend-multiply filter brightness-50 blur-sm"
