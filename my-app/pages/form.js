@@ -1,13 +1,9 @@
 import Head from "next/head";
 import DatePicker from "../components/DatePicker";
 import { useState } from "react";
-import Script from "next/script";
-import { validate } from "../lib/form";
 import emailjs from "emailjs-com";
 
 export default function form() {
-  const [isValidFirst, setIsValidFirst] = useState(true);
-  const [isValidLast, setIsValidLast] = useState(true);
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [selectedDate, setSelectedDate] = useState([]);
