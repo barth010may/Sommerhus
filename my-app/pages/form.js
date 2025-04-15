@@ -1,53 +1,88 @@
-import Head from 'next/head'
-import DatePicker from '../components/DatePicker'
-import { useState } from 'react'
-import Script from 'next/script'
-import { validate } from '../lib/form'
-import emailjs from 'emailjs-com'
+import Head from "next/head";
+import DatePicker from "../components/DatePicker";
+import { useState } from "react";
+import Script from "next/script";
+import { validate } from "../lib/form";
+import emailjs from "emailjs-com";
 
 export default function form() {
   const [isValidFirst, setIsValidFirst] = useState(true);
   const [isValidLast, setIsValidLast] = useState(true);
-  const [firstName, setFirstName] = useState('');
-  const [lastName, setLastName] = useState('');
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
   const [selectedDate, setSelectedDate] = useState([]);
+  const [errors, setErrors] = useState({ firstName: "", lastName: "" });
+
+  const validateInput = (name, value) => {
+    if (name === "firstName") {
+      if (value.trim() === "") {
+        return "Fornavn er nødvendigt";
+      }
+      if (value.length > 20) {
+        return "Dit fornavn er for langt";
+      }
+    }
+    if (name === "lastName") {
+      if (value.trim() === "") {
+        return "Efternavn er nødvendigt";
+      }
+      if (value.length > 20) {
+        return "Dit efternavn er for langt";
+      }
+    }
+    return "";
+  };
+
+  const handleInputChange = (e) => {
+    const { name, value } = e.target;
+    if (name === "firstName") setFirstName(value);
+    if (name === "lastName") setLastName(value);
+
+    // Validate the input and update errors
+    setErrors((prevErrors) => ({
+      ...prevErrors,
+      [name]: validateInput(name, value),
+    }));
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
 
-    // Validate the form
-    let isFormValid = validate({ firstName, lastName, setIsValidFirst, setIsValidLast });
+    // Validate all fields
+    const firstNameError = validateInput("firstName", firstName);
+    const lastNameError = validateInput("lastName", lastName);
 
-    if (isFormValid) {
-      // Prepare email data
-      const templateParams = {
-        firstName,
-        lastName,
-        startDate: selectedDate[0]?.toLocaleDateString('da-DK'), // Format date to Danish format
-        endDate: selectedDate[1]?.toLocaleDateString('da-DK'), // Format date to Danish format
-      };
-
-      // Send email using EmailJS
-      emailjs
-        .send(
-          'service_or79l6j', // Replace with your EmailJS service ID
-          'template_ox1o0c6', // Replace with your EmailJS template ID
-          templateParams,
-          'eNLGD-6jaeg6HuZRm' // Replace with your EmailJS user ID
-        )
-        .then(
-          (response) => {
-            console.log('SUCCESS!', response.status, response.text);
-            alert('Email sent successfully!');
-          },
-          (error) => {
-            console.error('FAILED...', error);
-            alert('Failed to send email. Please try again.');
-          }
-        );
-    } else {
-      console.log('Form validation failed.');
+    if (firstNameError || lastNameError) {
+      setErrors({ firstName: firstNameError, lastName: lastNameError });
+      return;
     }
+
+    // Prepare email data
+    const templateParams = {
+      firstName,
+      lastName,
+      startDate: selectedDate[0]?.toLocaleDateString("da-DK"), // Format date to Danish format
+      endDate: selectedDate[1]?.toLocaleDateString("da-DK"), // Format date to Danish format
+    };
+
+    // Send email using EmailJS
+    emailjs
+      .send(
+        "service_or79l6j", // Replace with your EmailJS service ID
+        "template_ox1o0c6", // Replace with your EmailJS template ID
+        templateParams,
+        "eNLGD-6jaeg6HuZRm" // Replace with your EmailJS user ID
+      )
+      .then(
+        (response) => {
+          console.log("SUCCESS!", response.status, response.text);
+          alert("Email sent successfully!");
+        },
+        (error) => {
+          console.error("FAILED...", error);
+          alert("Failed to send email. Please try again.");
+        }
+      );
   };
 
   return (
@@ -61,54 +96,76 @@ export default function form() {
         alt="main background image"
         src="/Sommerhus_pic1.jpg"
       />
-     
-    <form method="post" className="absolute inset-0 flex flex-col justify-center items-center mx-auto text-center">
+
+      <form
+        method="post"
+        className="absolute inset-0 flex flex-col justify-center items-center mx-auto text-center"
+        onSubmit={handleSubmit}
+      >
         <div className="grid gap-6 mb-6 md:grid-cols-2">
-          {isValidFirst ? (
-            <div>
-            <label htmlFor="first_name" className="block mb-2 text-sm font-medium text-white dark:text-white">Fornavn</label>
-            <input type="text" id="first_name" className="bg-light-blue-500 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark" placeholder="John"/>
-            </div>
-          
-          ) : (
-            <div>
-            <label htmlFor="username-error" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Fornavn</label>
-            <input 
-              type="text" 
-              id="username-error" 
-              class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-red-100 dark:border-red-400" 
-              placeholder=""
+          {/* First Name Input */}
+          <div>
+            <label
+              htmlFor="first_name"
+              className={`block mb-2 text-sm font-medium ${
+                errors.firstName ? "text-red-700" : "text-white"
+              }`}
+            >
+              Fornavn
+            </label>
+            <input
+              type="text"
+              id="first_name"
+              name="firstName"
               value={firstName}
-              onChange={(e) => setFirstName(e.target.value)}
-              />
-            <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span> Invalid Fornavn</p>
-          </div>
-          )} 
-          {isValidLast ? (
-                <div>
-                <label htmlFor="last_name" className="block mb-2 text-sm font-medium text-white dark:text-white">Efternavn</label>
-                <input 
-                  type="text" 
-                  id="last_name" 
-                  className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" 
-                  placeholder="Deer"
-                  value={lastName}
-                  onChange={(e) => setLastName(e.target.value)}
-                  />
-              </div>
-            ) : (
-              <div>
-              <label htmlFor="username-error" class="block mb-2 text-sm font-medium text-red-700 dark:text-red-500">Efternavn</label>
-              <input type="text" id="username-erro" class="bg-red-50 border border-red-500 text-red-900 placeholder-red-700 text-sm rounded-lg focus:ring-red-500 focus:border-red-500 block w-full p-2.5 dark:bg-red-100 dark:border-red-400" placeholder="" />
-              <p class="mt-2 text-sm text-red-600 dark:text-red-500"><span class="font-medium">Oops!</span> Invalid Efternavn</p>
-            </div>
+              onChange={handleInputChange}
+              className={`${
+                errors.firstName
+                  ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500"
+                  : "bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+              } text-sm rounded-lg block w-full p-2.5`}
+              placeholder="John"
+            />
+            {errors.firstName && (
+              <p className="mt-2 text-sm text-red-600">
+                <span className="font-medium">Oops!</span> {errors.firstName}
+              </p>
             )}
-          
+          </div>
+          {/* Last Name Input */}
+          <div>
+            <label
+              htmlFor="last_name"
+              className={`block mb-2 text-sm font-medium ${
+                errors.lastName ? "text-red-700" : "text-white"
+              }`}
+            >
+              Efternavn
+            </label>
+            <input
+              type="text"
+              id="last_name"
+              name="lastName"
+              value={lastName}
+              onChange={handleInputChange}
+              className={`${
+                errors.lastName
+                  ? "bg-red-50 border border-red-500 text-red-900 placeholder-red-700 focus:ring-red-500 focus:border-red-500"
+                  : "bg-gray-50 border border-gray-300 text-gray-900 focus:ring-blue-500 focus:border-blue-500"
+              } text-sm rounded-lg block w-full p-2.5`}
+              placeholder="Doe"
+            />
+            {errors.lastName && (
+              <p className="mt-2 text-sm text-red-600">
+                <span className="font-medium">Oops!</span> {errors.lastName}
+              </p>
+            )}
+          </div>
         </div>
-        <div className='w-1/10'>
-          <DatePicker onChange={(dates) => setSelectedDate(dates)}/>
+        <div className="w-1/10">
+          <DatePicker onChange={(dates) => setSelectedDate(dates)} />
         </div>
-        <div className='my-5'>
+        <div className="my-5">
           <button
             onClick={handleSubmit}
             type="button"
@@ -117,8 +174,7 @@ export default function form() {
             Submit
           </button>
         </div>
-    </form>
+      </form>
     </div>
-  )
+  );
 }
-
