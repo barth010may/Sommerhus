@@ -1,9 +1,9 @@
-import Link from "next/link"
-import Image from "next/image"
-import { Calendar, Info, MapPin, Star, Users } from "lucide-react"
+import Link from "next/link";
+import Image from "next/image";
+import { Calendar, Info, MapPin, Star, Users } from "lucide-react";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent } from "@/components/ui/card"
+import { Button } from "@/components/ui/button";
+import { Card, CardContent } from "@/components/ui/card";
 
 export default function Home() {
   return (
@@ -20,7 +20,7 @@ export default function Home() {
             />
             <span className="text-xl font-semibold">Sommerhus Ophold</span>
           </Link>
-          
+
           {/* Language Switcher with Flags */}
           <div className="flex items-center gap-2">
             <button
@@ -67,9 +67,15 @@ export default function Home() {
               Contact
             </Link>
           </nav> */}
-          <Button variant="outline" size="sm" className="hidden md:flex text-white font-bold colors-white bg-green-600 hover:bg-green-700">
-            Book ophold
-          </Button>
+          <Link href={"/booking"}>
+            <Button
+              variant="outline"
+              size="sm"
+              className="hidden md:flex text-white font-bold colors-white bg-green-600 hover:bg-green-700"
+            >
+              Book Ophold
+            </Button>
+          </Link>
         </div>
       </header>
       <main>
@@ -77,7 +83,9 @@ export default function Home() {
           <div className="container px-4 mx-auto md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-4">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Skønt Sommerhus I Dyreborg</h1>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+                  Skønt Sommerhus I Dyreborg
+                </h1>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -86,16 +94,20 @@ export default function Home() {
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
                   </div>
-                  <span className="text-muted-foreground">(48 Anmeldelser)</span>
+                  <span className="text-muted-foreground">
+                    (48 Anmeldelser)
+                  </span>
                 </div>
                 <div className="flex items-center gap-2 text-sm">
                   <MapPin className="w-4 h-4 text-green-600" />
                   <span>Faaborg, Danmark</span>
                 </div>
                 <p className="text-muted-foreground">
-                Book et ophold i vores fredelige sommerhus i dyreborg, beliggende tæt på havet med en dejlig natur. 
-                Perfekt til familieferier eller en stille sommerhus tur med venner. 
-                Nyd den fantastiske udsigt over havet, og alle moderne faciliteter for et behageligt ophold.
+                  Book et ophold i vores fredelige sommerhus i dyreborg,
+                  beliggende tæt på havet med en dejlig natur. Perfekt til
+                  familieferier eller en stille sommerhus tur med venner. Nyd
+                  den fantastiske udsigt over havet, og alle moderne faciliteter
+                  for et behageligt ophold.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-2">
@@ -128,15 +140,20 @@ export default function Home() {
           <div className="container px-4 mx-auto md:px-6">
             <div className="grid gap-6 lg:grid-cols-3 lg:gap-12">
               <div className="space-y-4 lg:col-span-2">
-                <h2 className="text-2xl font-bold tracking-tighter">Om sommerhuset</h2>
+                <h2 className="text-2xl font-bold tracking-tighter">
+                  Om sommerhuset
+                </h2>
                 <p className="text-muted-foreground">
-                Vores smukke sommerhus tilbyder den perfekte blanding af rustik charme og moderne komfort. 
-                Beliggende ved tæt på havet med adgang til en dejlig sand strand, kan du nyde en betagende udsigt og direkte adgang til svømning, fiskeri og sejlads.
+                  Vores smukke sommerhus tilbyder den perfekte blanding af
+                  rustik charme og moderne komfort. Beliggende ved tæt på havet
+                  med adgang til en dejlig sand strand, kan du nyde en betagende
+                  udsigt og direkte adgang til svømning, fiskeri og sejlads.
                 </p>
                 <p className="text-muted-foreground">
-                Huset har fire hyggelige soveværelser, et fuldt udstyret køkken, en rummelig stue med pejs og en stor terrasse, 
-                der er perfekt til udendørs spisning og afslapning. 
-                Ejendommen inkluderer en indedørs boblebad og en traditionel finsk sauna.
+                  Huset har fire hyggelige soveværelser, et fuldt udstyret
+                  køkken, en rummelig stue med pejs og en stor terrasse, der er
+                  perfekt til udendørs spisning og afslapning. Ejendommen
+                  inkluderer en indedørs boblebad og en traditionel finsk sauna.
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card>
@@ -177,10 +194,20 @@ export default function Home() {
                     />
                   </div>
                   <div className="relative aspect-video overflow-hidden rounded-lg">
-                    <Image src="/placeholder.svg?height=300&width=400" alt="Kitchen" fill className="object-cover" />
+                    <Image
+                      src="/placeholder.svg?height=300&width=400"
+                      alt="Kitchen"
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                   <div className="relative aspect-video overflow-hidden rounded-lg">
-                    <Image src="/placeholder.svg?height=300&width=400" alt="Bedroom" fill className="object-cover" />
+                    <Image
+                      src="/placeholder.svg?height=300&width=400"
+                      alt="Bedroom"
+                      fill
+                      className="object-cover"
+                    />
                   </div>
                 </div>
               </div>
@@ -194,7 +221,9 @@ export default function Home() {
                     </div>*/}
                     <div className="space-y-4">
                       <Link href="/booking" className="w-full">
-                        <Button className="w-full bg-green-600 hover:bg-green-700">Tjek Tilgængelighed</Button>
+                        <Button className="w-full bg-green-600 hover:bg-green-700">
+                          Tjek Tilgængelighed
+                        </Button>
                       </Link>
                       <p className="text-sm text-center text-muted-foreground">
                         Gratis afbestilling op til 14 dage før check-in
@@ -216,7 +245,7 @@ export default function Home() {
                 <span className="text-lg font-semibold">Sommer Ophold</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
-              Dit perfekte sommerhusophold midt i naturen.
+                Dit perfekte sommerhusophold midt i naturen.
               </p>
             </div>
             {/*
@@ -267,10 +296,12 @@ export default function Home() {
             </div>
           </div>
           <div className="flex flex-col items-center justify-between gap-4 mt-8 pt-6 border-t md:flex-row">
-            <p className="text-xs text-muted-foreground">© 2025 VIKBOR Holding. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">
+              © 2025 VIKBOR Holding. All rights reserved.
+            </p>
           </div>
         </div>
       </footer>
     </div>
-  )
+  );
 }

@@ -1,22 +1,40 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { CalendarIcon, ChevronLeft, Info } from "lucide-react"
-import Image from "next/image"
+import { useState } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CalendarIcon, ChevronLeft, Info } from "lucide-react";
+import Image from "next/image";
+import emailjs from "emailjs-com";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
 
 // Mock data for booked dates
 const bookedDates = [
@@ -32,17 +50,17 @@ const bookedDates = [
   new Date(2024, 7, 5), // August 5
   new Date(2024, 7, 6), // August 6
   new Date(2024, 7, 7), // August 7
-]
+];
 
 export default function BookingPage() {
-  const router = useRouter()
-  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined)
-  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined)
-  const [guests, setGuests] = useState<string>("2")
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [specialRequests, setSpecialRequests] = useState("")
+  const router = useRouter();
+  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined);
+  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined);
+  const [guests, setGuests] = useState<string>("2");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [specialRequests, setSpecialRequests] = useState("");
 
   // Function to disable already booked dates
   const disabledDates = (date: Date) => {
@@ -50,20 +68,22 @@ export default function BookingPage() {
       (bookedDate) =>
         date.getDate() === bookedDate.getDate() &&
         date.getMonth() === bookedDate.getMonth() &&
-        date.getFullYear() === bookedDate.getFullYear(),
-    )
-  }
+        date.getFullYear() === bookedDate.getFullYear()
+    );
+  };
 
   // Calculate total price (number of nights * price per night)
   const calculateTotalPrice = () => {
-    if (!checkIn || !checkOut) return 0
+    if (!checkIn || !checkOut) return 0;
 
-    const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
-    return nights * 150 // $150 per night
-  }
+    const nights = Math.ceil(
+      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return nights * 150; // $150 per night
+  };
 
-  const handleSubmit = (e: React.FormEvent) => {
-    e.preventDefault()
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
 
     // In a real application, you would send this data to your backend
     const bookingData = {
@@ -75,13 +95,50 @@ export default function BookingPage() {
       phone,
       specialRequests,
       totalPrice: calculateTotalPrice(),
+    };
+
+    console.log("Booking submitted:", bookingData);
+
+    // Send email using EmailJS
+    try {
+      const templateParams = {
+        checkIn: checkIn?.toLocaleDateString() || "N/A",
+        checkOut: checkOut?.toLocaleDateString() || "N/A",
+        guests,
+        name,
+        email,
+        phone,
+        specialRequests: specialRequests || "None",
+        totalPrice: `${calculateTotalPrice()} DKK`,
+      };
+
+      const response = await emailjs.send(
+        "service_or79l6j", // Replace with your EmailJS service ID
+        "template_61xxjng", // Replace with your EmailJS template ID
+        templateParams,
+        "eNLGD-6jaeg6HuZRm" // Replace with your EmailJS user ID
+      );
+
+      console.log("Email sent successfully:", response.status, response.text);
+
+      // Navigate to confirmation page
+      const queryString = new URLSearchParams({
+        checkIn: checkIn?.toISOString() || "",
+        checkOut: checkOut?.toISOString() || "",
+        guests,
+        name,
+        email,
+        phone,
+        specialRequests,
+        totalPrice: calculateTotalPrice().toString(),
+      }).toString();
+
+      router.push(`/booking/confirmation?${queryString}`);
+    } catch (error) {
+      console.error("Failed to send email:", error);
+      alert("Failed to send booking confirmation email. Please try again.");
     }
-
-    console.log("Booking submitted:", bookingData)
-
-    // Navigate to confirmation page
-    router.push("/booking/confirmation")
-  }
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -116,7 +173,8 @@ export default function BookingPage() {
               <CardHeader>
                 <CardTitle>Booking Detaljer</CardTitle>
                 <CardDescription>
-                  Vælg dine ønskede datoer og angiv dine oplysninger for at booke sommerhuset.
+                  Vælg dine ønskede datoer og angiv dine oplysninger for at
+                  booke sommerhuset.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -131,10 +189,15 @@ export default function BookingPage() {
                             <Button
                               id="check-in"
                               variant="outline"
-                              className={cn("justify-start text-left font-normal", !checkIn && "text-muted-foreground")}
+                              className={cn(
+                                "justify-start text-left font-normal",
+                                !checkIn && "text-muted-foreground"
+                              )}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkIn ? checkIn.toLocaleDateString() : "Vælg dato"}
+                              {checkIn
+                                ? checkIn.toLocaleDateString()
+                                : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -143,7 +206,9 @@ export default function BookingPage() {
                               selected={checkIn}
                               onSelect={setCheckIn}
                               disabled={(date) =>
-                                date < new Date() || disabledDates(date) || (checkOut ? date >= checkOut : false)
+                                date < new Date() ||
+                                disabledDates(date) ||
+                                (checkOut ? date >= checkOut : false)
                               }
                               initialFocus
                             />
@@ -159,11 +224,13 @@ export default function BookingPage() {
                               variant="outline"
                               className={cn(
                                 "justify-start text-left font-normal",
-                                !checkOut && "text-muted-foreground",
+                                !checkOut && "text-muted-foreground"
                               )}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkOut ? checkOut.toLocaleDateString() : "Vælg dato"}
+                              {checkOut
+                                ? checkOut.toLocaleDateString()
+                                : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -172,7 +239,9 @@ export default function BookingPage() {
                               selected={checkOut}
                               onSelect={setCheckOut}
                               disabled={(date) =>
-                                date < new Date() || disabledDates(date) || (checkIn ? date <= checkIn : false)
+                                date < new Date() ||
+                                disabledDates(date) ||
+                                (checkIn ? date <= checkIn : false)
                               }
                               initialFocus
                             />
@@ -203,7 +272,12 @@ export default function BookingPage() {
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="grid gap-2">
                         <Label htmlFor="name">Navn</Label>
-                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+                        <Input
+                          id="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                        />
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
@@ -218,10 +292,18 @@ export default function BookingPage() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="phone">Telefon Nummer</Label>
-                      <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
+                      />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="special-requests">Specielle Ønsker (valgfrit)</Label>
+                      <Label htmlFor="special-requests">
+                        Specielle Ønsker (valgfrit)
+                      </Label>
                       <Textarea
                         id="special-requests"
                         value={specialRequests}
@@ -235,7 +317,9 @@ export default function BookingPage() {
                     <Button
                       type="submit"
                       className="bg-green-600 hover:bg-green-700"
-                      disabled={!checkIn || !checkOut || !name || !email || !phone}
+                      disabled={
+                        !checkIn || !checkOut || !name || !email || !phone
+                      }
                     >
                       Continue to Payment
                     </Button>
@@ -257,11 +341,17 @@ export default function BookingPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Check-in</span>
-                    <span>{checkIn ? checkIn.toLocaleDateString() : "Not selected"}</span>
+                    <span>
+                      {checkIn ? checkIn.toLocaleDateString() : "Not selected"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Check-out</span>
-                    <span>{checkOut ? checkOut.toLocaleDateString() : "Not selected"}</span>
+                    <span>
+                      {checkOut
+                        ? checkOut.toLocaleDateString()
+                        : "Not selected"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Antal Gæster</span>
@@ -287,5 +377,5 @@ export default function BookingPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }

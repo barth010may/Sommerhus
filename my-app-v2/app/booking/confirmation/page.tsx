@@ -1,10 +1,32 @@
-import Link from "next/link"
-import { Check, ChevronLeft } from "lucide-react"
+"use client";
 
-import { Button } from "@/components/ui/button"
-import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card"
+import Link from "next/link";
+import { useSearchParams } from "next/navigation";
+import { Check, ChevronLeft } from "lucide-react";
+
+import { Button } from "@/components/ui/button";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
 
 export default function ConfirmationPage() {
+  const searchParams = useSearchParams();
+
+  // Retrieve query parameters
+  const checkIn = searchParams.get("checkIn");
+  const checkOut = searchParams.get("checkOut");
+  const guests = searchParams.get("guests");
+  const name = searchParams.get("name");
+  const email = searchParams.get("email");
+  const phone = searchParams.get("phone");
+  const specialRequests = searchParams.get("specialRequests");
+  const totalPrice = searchParams.get("totalPrice");
+
   return (
     <div className="min-h-screen bg-gray-50">
       <main className="container flex items-center justify-center px-4 py-12 mx-auto md:px-6">
@@ -16,31 +38,42 @@ export default function ConfirmationPage() {
               </div>
             </div>
             <CardTitle className="text-2xl">Booking Bekræftet!</CardTitle>
-            <CardDescription>Dit ansøgning om et ophold i vores sommerhus i Dyreborg er hermed bekræftet</CardDescription>
+            <CardDescription>
+              Tak, {name || "Gæst"}! Din booking er bekræftet.
+            </CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="p-4 rounded-lg bg-green-50">
-              <h3 className="mb-2 font-medium">Booking Details</h3>
+              <h3 className="mb-2 font-medium">Booking Detaljer</h3>
               <div className="grid grid-cols-2 gap-2 text-sm">
-                <div className="text-muted-foreground">Booking ID:</div>
-                <div>SUM-12345</div>
-                <div className="text-muted-foreground">Sted:</div>
-                <div>Lakeside Summerhouse</div>
+                <div className="text-muted-foreground">Navn:</div>
+                <div>{name || "N/A"}</div>
+                <div className="text-muted-foreground">Email:</div>
+                <div>{email || "N/A"}</div>
+                <div className="text-muted-foreground">Telefon:</div>
+                <div>{phone || "N/A"}</div>
                 <div className="text-muted-foreground">Check-in:</div>
-                <div>June 15, 2024</div>
+                <div>
+                  {checkIn ? new Date(checkIn).toLocaleDateString() : "N/A"}
+                </div>
                 <div className="text-muted-foreground">Check-out:</div>
-                <div>June 20, 2024</div>
+                <div>
+                  {checkOut ? new Date(checkOut).toLocaleDateString() : "N/A"}
+                </div>
                 <div className="text-muted-foreground">Antal Gæster:</div>
-                <div>4</div>
+                <div>{guests || "N/A"}</div>
+                <div className="text-muted-foreground">Specielle Ønsker:</div>
+                <div>{specialRequests || "Ingen"}</div>
                 <div className="text-muted-foreground">Samlet Pris:</div>
-                <div>???</div>
+                <div>{/*totalPrice ? `${totalPrice} DKK` : "N/A"*/}???</div>
               </div>
             </div>
             <div className="space-y-2">
               <h3 className="font-medium">Hvad er det næste?</h3>
               <p className="text-sm text-muted-foreground">
-                Tak for din booking! Vi glæder os til at byde dig velkommen i vores sommerhus. Vi kontakter dig så snart
-                som muligt for aftale videre detaljer af din booking.
+                Tak for din booking! Vi glæder os til at byde dig velkommen i
+                vores sommerhus. Vi kontakter dig så snart som muligt for at
+                aftale videre detaljer af din booking.
               </p>
             </div>
           </CardContent>
@@ -58,5 +91,5 @@ export default function ConfirmationPage() {
         </Card>
       </main>
     </div>
-  )
+  );
 }
