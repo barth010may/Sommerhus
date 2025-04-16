@@ -2,6 +2,7 @@ import Head from 'next/head'
 import { useState } from 'react'
 import Button from '../components/Button'
 import Link from "next/link"
+import React from 'react'
 
 export default function IndexPage() {  
   const [isLoading, setIsLoading] = useState(true);

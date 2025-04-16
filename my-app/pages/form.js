@@ -1,33 +1,34 @@
+import React from "react";
 import Head from "next/head";
 import DatePicker from "../components/DatePicker";
 import { useState } from "react";
 import emailjs from "emailjs-com";
 
-export default function form() {
+export const validateInput = (name, value) => {
+  if (name === "firstName") {
+    if (value.trim() === "") {
+      return "Fornavn er nødvendigt";
+    }
+    if (value.length > 20) {
+      return "Dit fornavn er for langt";
+    }
+  }
+  if (name === "lastName") {
+    if (value.trim() === "") {
+      return "Efternavn er nødvendigt";
+    }
+    if (value.length > 20) {
+      return "Dit efternavn er for langt";
+    }
+  } 
+  return "";
+};
+
+export default function Form() {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
   const [selectedDate, setSelectedDate] = useState([]);
   const [errors, setErrors] = useState({ firstName: "", lastName: "" });
-
-  const validateInput = (name, value) => {
-    if (name === "firstName") {
-      if (value.trim() === "") {
-        return "Fornavn er nødvendigt";
-      }
-      if (value.length > 20) {
-        return "Dit fornavn er for langt";
-      }
-    }
-    if (name === "lastName") {
-      if (value.trim() === "") {
-        return "Efternavn er nødvendigt";
-      }
-      if (value.length > 20) {
-        return "Dit efternavn er for langt";
-      }
-    }
-    return "";
-  };
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
