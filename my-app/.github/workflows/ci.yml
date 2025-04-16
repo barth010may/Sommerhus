@@ -1,3 +1,4 @@
+# filepath: c:\Users\raba\Developer\Sommerhus\my-app\.github\workflows\ci.yml
 name: CI Pipeline
 
 on:
@@ -23,11 +24,14 @@ jobs:
       # Install dependencies
       - name: Install dependencies
         run: npm install
+        working-directory: my-app
 
       # Run tests
       - name: Run tests
         run: npm test
+        working-directory: my-app
 
       # Build the project
       - name: Build project
         run: npm run build
+        working-directory: my-app
