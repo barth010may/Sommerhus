@@ -6,6 +6,7 @@ import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
 import { CalendarIcon, ChevronLeft, Info } from "lucide-react"
+import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 import { Button } from "@/components/ui/button"
@@ -87,8 +88,14 @@ export default function BookingPage() {
       <header className="border-b bg-white">
         <div className="container flex items-center h-16 px-4 mx-auto md:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <CalendarIcon className="w-6 h-6 text-green-600" />
-            <span className="text-xl font-semibold">SummerStay</span>
+            <Image
+              src="/SommerhusLogo.jpg" // Replace with your logo path
+              alt="Sommerhus Logo"
+              width={40} // Adjust the width as needed
+              height={40} // Adjust the height as needed
+              className="rounded-full" // Optional: Add styling if needed
+            />
+            <span className="text-xl font-semibold">Sommerhus Ophold</span>
           </Link>
         </div>
       </header>
@@ -100,16 +107,16 @@ export default function BookingPage() {
               <span className="sr-only">Back</span>
             </Link>
           </Button>
-          <h1 className="text-2xl font-bold tracking-tight">Book Your Stay</h1>
+          <h1 className="text-2xl font-bold tracking-tight">Book dit ophold</h1>
         </div>
 
         <div className="grid gap-8 md:grid-cols-3">
           <div className="md:col-span-2">
             <Card>
               <CardHeader>
-                <CardTitle>Booking Details</CardTitle>
+                <CardTitle>Booking Detaljer</CardTitle>
                 <CardDescription>
-                  Select your dates and provide your information to book the summerhouse.
+                  Vælg dine ønskede datoer og angiv dine oplysninger for at booke sommerhuset.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -127,7 +134,7 @@ export default function BookingPage() {
                               className={cn("justify-start text-left font-normal", !checkIn && "text-muted-foreground")}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkIn ? checkIn.toLocaleDateString() : "Select date"}
+                              {checkIn ? checkIn.toLocaleDateString() : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -156,7 +163,7 @@ export default function BookingPage() {
                               )}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkOut ? checkOut.toLocaleDateString() : "Select date"}
+                              {checkOut ? checkOut.toLocaleDateString() : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -174,28 +181,28 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="guests">Guests</Label>
+                      <Label htmlFor="guests">Gæster</Label>
                       <Select value={guests} onValueChange={setGuests}>
                         <SelectTrigger id="guests">
                           <SelectValue placeholder="Select number of guests" />
                         </SelectTrigger>
                         <SelectContent>
-                          <SelectItem value="1">1 guest</SelectItem>
-                          <SelectItem value="2">2 guests</SelectItem>
-                          <SelectItem value="3">3 guests</SelectItem>
-                          <SelectItem value="4">4 guests</SelectItem>
-                          <SelectItem value="5">5 guests</SelectItem>
-                          <SelectItem value="6">6 guests</SelectItem>
+                          <SelectItem value="1">1 gæst</SelectItem>
+                          <SelectItem value="2">2 gæster</SelectItem>
+                          <SelectItem value="3">3 gæster</SelectItem>
+                          <SelectItem value="4">4 gæster</SelectItem>
+                          <SelectItem value="5">5 gæster</SelectItem>
+                          <SelectItem value="6">6 gæster</SelectItem>
                         </SelectContent>
                       </Select>
                     </div>
                   </div>
 
                   <div className="space-y-4">
-                    <h3 className="font-medium">Your Information</h3>
+                    <h3 className="font-medium">Din Information</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="grid gap-2">
-                        <Label htmlFor="name">Full Name</Label>
+                        <Label htmlFor="name">Navn</Label>
                         <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
                       </div>
                       <div className="grid gap-2">
@@ -210,16 +217,16 @@ export default function BookingPage() {
                       </div>
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="phone">Phone Number</Label>
+                      <Label htmlFor="phone">Telefon Nummer</Label>
                       <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="special-requests">Special Requests (Optional)</Label>
+                      <Label htmlFor="special-requests">Specielle Ønsker (valgfrit)</Label>
                       <Textarea
                         id="special-requests"
                         value={specialRequests}
                         onChange={(e) => setSpecialRequests(e.target.value)}
-                        placeholder="Let us know if you have any special requests or questions"
+                        placeholder="Fortæl os hvis du har nogen specielle ønsker eller spørgsmål"
                       />
                     </div>
                   </div>
@@ -241,11 +248,11 @@ export default function BookingPage() {
           <div>
             <Card className="sticky top-6">
               <CardHeader>
-                <CardTitle>Booking Summary</CardTitle>
+                <CardTitle>Booking Oversigt</CardTitle>
               </CardHeader>
               <CardContent className="space-y-4">
                 <div className="flex justify-between">
-                  <span>Lakeside Summerhouse</span>
+                  <span>Sommerhus i Dyreborg</span>
                 </div>
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
@@ -257,24 +264,24 @@ export default function BookingPage() {
                     <span>{checkOut ? checkOut.toLocaleDateString() : "Not selected"}</span>
                   </div>
                   <div className="flex justify-between text-sm">
-                    <span>Guests</span>
+                    <span>Antal Gæster</span>
                     <span>{guests}</span>
                   </div>
                 </div>
-                <div className="pt-4 border-t">
+                {/*<div className="pt-4 border-t">
                   <div className="flex justify-between">
                     <span className="font-medium">Total</span>
                     <span className="font-medium">${calculateTotalPrice()}</span>
                   </div>
-                  <p className="mt-1 text-xs text-muted-foreground">Includes all fees and taxes</p>
-                </div>
+                  <p className="mt-1 text-xs text-muted-foreground"></p>
+                </div>*/}
               </CardContent>
-              <CardFooter className="flex flex-col items-start gap-2 border-t">
+              {/*<CardFooter className="flex flex-col items-start gap-2 border-t">
                 <div className="flex items-start gap-2 text-sm">
                   <Info className="w-4 h-4 mt-0.5 text-green-600" />
-                  <p>Free cancellation up to 7 days before check-in</p>
+                  <p>Gratis annullering optil 14 dage før check-in</p>
                 </div>
-              </CardFooter>
+              </CardFooter>*/}
             </Card>
           </div>
         </div>

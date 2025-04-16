@@ -11,10 +11,46 @@ export default function Home() {
       <header className="border-b">
         <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
           <Link href="/" className="flex items-center gap-2">
-            <Calendar className="w-6 h-6 text-green-600" />
-            <span className="text-xl font-semibold">Summerhus Ophold</span>
+            <Image
+              src="/SommerhusLogo.jpg"
+              alt="Sommerhus Logo"
+              width={40} // Adjust the width as needed
+              height={40} // Adjust the height as needed
+              className="rounded-full" // Optional: Add styling if needed
+            />
+            <span className="text-xl font-semibold">Sommerhus Ophold</span>
           </Link>
-          <nav className="hidden space-x-4 md:flex">
+          
+          {/* Language Switcher with Flags */}
+          <div className="flex items-center gap-2">
+            <button
+              // onClick={() => console.log("Switch to Danish")}
+              className="w-8 h-8"
+              aria-label="Switch to Danish"
+            >
+              <Image
+                src="/flags/denmark.svg"
+                alt="Danish Flag"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            </button>
+            <button
+              //onClick={() => console.log("Switch to English")}
+              className="w-8 h-8"
+              aria-label="Switch to English"
+            >
+              <Image
+                src="/flags/uk.svg"
+                alt="English Flag"
+                width={32}
+                height={32}
+                className="rounded-full"
+              />
+            </button>
+          </div>
+          {/*<nav className="hidden space-x-4 md:flex">
             <Link href="/" className="text-sm font-medium hover:underline underline-offset-4">
               Home
             </Link>
@@ -30,9 +66,9 @@ export default function Home() {
             >
               Contact
             </Link>
-          </nav>
-          <Button variant="outline" size="sm" className="hidden md:flex">
-            Sign In
+          </nav> */}
+          <Button variant="outline" size="sm" className="hidden md:flex text-white font-bold colors-white bg-green-600 hover:bg-green-700">
+            Book ophold
           </Button>
         </div>
       </header>
@@ -41,7 +77,7 @@ export default function Home() {
           <div className="container px-4 mx-auto md:px-6">
             <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
               <div className="space-y-4">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Skønt sommerhus i Dyreborg</h1>
+                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">Skønt Sommerhus I Dyreborg</h1>
                 <div className="flex items-center gap-2 text-sm">
                   <div className="flex items-center">
                     <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
@@ -57,9 +93,9 @@ export default function Home() {
                   <span>Faaborg, Danmark</span>
                 </div>
                 <p className="text-muted-foreground">
-                Flygt til vores fredelige sommerhus ved søen, beliggende midt i naturen. 
-                Perfekt til familieferier eller en stille retræte med venner. 
-                Nyd den fantastiske udsigt over søen, privat adgang til vandet og alle moderne faciliteter for et behageligt ophold.
+                Book et ophold i vores fredelige sommerhus i dyreborg, beliggende tæt på havet med en dejlig natur. 
+                Perfekt til familieferier eller en stille sommerhus tur med venner. 
+                Nyd den fantastiske udsigt over havet, og alle moderne faciliteter for et behageligt ophold.
                 </p>
                 <div className="flex flex-wrap gap-4">
                   <div className="flex items-center gap-2">
@@ -68,11 +104,11 @@ export default function Home() {
                   </div>
                   <div className="flex items-center gap-2">
                     <Info className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">3 soveværelser</span>
+                    <span className="text-sm">4 soveværelser</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <Info className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">2 badeværelser</span>
+                    <span className="text-sm">1 stort badeværelse</span>
                   </div>
                 </div>
               </div>
@@ -95,22 +131,22 @@ export default function Home() {
                 <h2 className="text-2xl font-bold tracking-tighter">Om sommerhuset</h2>
                 <p className="text-muted-foreground">
                 Vores smukke sommerhus tilbyder den perfekte blanding af rustik charme og moderne komfort. 
-                Beliggende ved bredden af en uberørt sø, kan du nyde en betagende udsigt og direkte adgang til svømning, fiskeri og sejlads.
+                Beliggende ved tæt på havet med adgang til en dejlig sand strand, kan du nyde en betagende udsigt og direkte adgang til svømning, fiskeri og sejlads.
                 </p>
                 <p className="text-muted-foreground">
-                Huset har tre hyggelige soveværelser, et fuldt udstyret køkken, en rummelig stue med pejs og en stor terrasse, 
+                Huset har fire hyggelige soveværelser, et fuldt udstyret køkken, en rummelig stue med pejs og en stor terrasse, 
                 der er perfekt til udendørs spisning og afslapning. 
-                Ejendommen inkluderer en privat bådebro, en robåd til gæsternes brug og en traditionel svensk sauna.
+                Ejendommen inkluderer en indedørs boblebad og en traditionel finsk sauna.
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card>
                     <CardContent className="p-4">
-                      <h3 className="font-semibold">Amenities</h3>
+                      <h3 className="font-semibold">Faciliteter</h3>
                       <ul className="mt-2 grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
                         <li>Wifi</li>
                         <li>Pejs</li>
                         <li>Sauna</li>
-                        <li>Robåd</li>
+                        <li>Boblebad</li>
                         <li>Udendørs Grill</li>
                         <li>Terasse</li>
                         <li>Fuldt udstyret køkken</li>
@@ -120,10 +156,10 @@ export default function Home() {
                   </Card>
                   <Card>
                     <CardContent className="p-4">
-                      <h3 className="font-semibold">House Rules</h3>
+                      <h3 className="font-semibold">Husregler</h3>
                       <ul className="mt-2 space-y-1 text-sm">
                         <li>Check-in: 15:00 - 20:00</li>
-                        <li>Checkout: 11:00</li>
+                        <li>Check-ud: 11:00</li>
                         <li>Rygning forbudt</li>
                         <li>Ingen fester eller større arrangementer</li>
                         <li>Kæledyr tilladt (med forudgående godkendelse)</li>
@@ -177,12 +213,13 @@ export default function Home() {
             <div>
               <div className="flex items-center gap-2">
                 <Calendar className="w-5 h-5 text-green-600" />
-                <span className="text-lg font-semibold">Summer Ophold</span>
+                <span className="text-lg font-semibold">Sommer Ophold</span>
               </div>
               <p className="mt-2 text-sm text-muted-foreground">
               Dit perfekte sommerhusophold midt i naturen.
               </p>
             </div>
+            {/*
             <div className="grid grid-cols-2 gap-6 md:gap-8">
               <div className="space-y-3">
                 <h3 className="text-sm font-medium">Links</h3>
@@ -219,18 +256,18 @@ export default function Home() {
                   </li>
                 </ul>
               </div>
-            </div>
+            </div>*/}
             <div className="space-y-3">
-              <h3 className="text-sm font-medium">Contact</h3>
+              <h3 className="text-sm font-medium">Kontakt</h3>
               <address className="not-italic text-sm text-muted-foreground">
-                Email: info@summerstay.example
+                Email: camilla.vikoren@gmail.com
                 <br />
-                Phone: +46 123 456 789
+                Phone: +45 29 60 78 21
               </address>
             </div>
           </div>
           <div className="flex flex-col items-center justify-between gap-4 mt-8 pt-6 border-t md:flex-row">
-            <p className="text-xs text-muted-foreground">© 2024 SummerStay. All rights reserved.</p>
+            <p className="text-xs text-muted-foreground">© 2025 VIKBOR Holding. All rights reserved.</p>
           </div>
         </div>
       </footer>
