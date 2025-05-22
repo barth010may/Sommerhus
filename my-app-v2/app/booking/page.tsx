@@ -308,7 +308,7 @@ export default function BookingPage() {
                       className="bg-green-600 hover:bg-green-700"
                       disabled={!checkIn || !checkOut || !name || !email || !phone}
                     >
-                      Continue to Payment
+                      Bekræft Bestilling
                     </Button>
                   </div>
                 </form>
