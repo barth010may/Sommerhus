@@ -4,8 +4,15 @@ import { Calendar, Info, MapPin, Star, Users } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
+import { GoogleMap } from "@/components/google-map"
 
 export default function Home() {
+// Update these coordinates to your actual summerhouse location
+  const summerhouseCoordinates = {
+    latitude: 55.06952865429421, // Replace with your actual latitude
+    longitude: 10.203022059985424, // Replace with your actual longitude
+  }
+
   return (
     <div className="min-h-screen bg-white">
       <header className="border-b">
@@ -231,6 +238,94 @@ export default function Home() {
                     </div>
                   </CardContent>
                 </Card>
+              </div>
+            </div>
+          </div>
+        </section>
+        {/* Location Section with Google Maps */}
+        <section className="py-12 bg-white">
+          <div className="container px-4 mx-auto md:px-6">
+            <div className="space-y-8">
+              <div className="text-center space-y-4">
+                <h2 className="text-2xl font-bold tracking-tighter">Beliggenhed</h2>
+                <p className="text-muted-foreground max-w-2xl mx-auto">
+                  Vores sommerhus er beliggende i det smukke Dyreborg område, omgivet af natur og med nem adgang til
+                  havet.
+                </p>
+              </div>
+
+              <div className="grid gap-8 lg:grid-cols-3">
+                <div className="lg:col-span-2 space-y-4">
+                  {/* Primary map - Google Maps */}
+                  <div>
+                    <h3 className="text-lg font-medium mb-2"></h3>
+                    <GoogleMap
+                      latitude={summerhouseCoordinates.latitude}
+                      longitude={summerhouseCoordinates.longitude}
+                      zoom={15}
+                      title="Sommerhus i Dyreborg"
+                      className="w-full h-96"
+                    />
+                  </div>
+                </div>
+
+                <div className="space-y-6">
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold mb-4">Adresse</h3>
+                      <div className="space-y-2 text-sm">
+                        <div className="flex items-start gap-2">
+                          <MapPin className="w-4 h-4 mt-0.5 text-green-600" />
+                          <div>
+                            <p>Vibevej 25</p>
+                            <p>5600 Faaborg</p>
+                            <p>Danmark</p>
+                          </div>
+                        </div>
+                      </div>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold mb-4">I Nærheden</h3>
+                      <ul className="space-y-2 text-sm">
+                        <li className="flex justify-between">
+                          <span>Dyreborg Strand</span>
+                          <span className="text-muted-foreground">2 min gåtur</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Lokal Købmand</span>
+                          <span className="text-muted-foreground">5 min kørsel</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Restaurant Søpavillonen</span>
+                          <span className="text-muted-foreground">10 min kørsel</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>Dyreborg Station</span>
+                          <span className="text-muted-foreground">15 min kørsel</span>
+                        </li>
+                        <li className="flex justify-between">
+                          <span>København</span>
+                          <span className="text-muted-foreground">1 time kørsel</span>
+                        </li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+
+                  <Card>
+                    <CardContent className="p-6">
+                      <h3 className="font-semibold mb-4">Transport</h3>
+                      <ul className="space-y-2 text-sm">
+                        <li>🚗 Gratis parkering på stedet</li>
+                        <li>🚌 Offentlig transport tilgængelig</li>
+                        <li>🚲 Cykeludlejning i nærheden</li>
+                        <li>✈️ 45 min fra Københavns Lufthavn</li>
+                      </ul>
+                    </CardContent>
+                  </Card>
+                </div>
               </div>
             </div>
           </div>
