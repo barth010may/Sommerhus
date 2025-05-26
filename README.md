@@ -2,7 +2,11 @@
 
 ## TODO:
 
-1. Update calendar overview to include disabled reserved dates [x]
-2. Update website with pictures 
-3. Add english translated page option
-4. Find marketing possibilities for the summerhouse.
+- [x] Update calendar overview to include disabled reserved dates
+- [x] Add Google Maps link to show location on map
+- [ ] Add proper database functionality
+- [ ] Adjust Pricing
+- [ ] Update website with pictures 
+- [ ] Add english translated page option
+- [ ] Find marketing possibilities for the summerhouse.
+
