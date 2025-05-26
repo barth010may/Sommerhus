@@ -286,7 +286,7 @@ export default function Home() {
                     </CardContent>
                   </Card>
 
-                  <Card>
+                 <Card>
                     <CardContent className="p-6">
                       <h3 className="font-semibold mb-4">I Nærheden</h3>
                       <ul className="space-y-2 text-sm">
@@ -296,10 +296,10 @@ export default function Home() {
                         </li>
                         <li className="flex justify-between">
                           <span>Lokal Købmand</span>
-                          <span className="text-muted-foreground">5 min kørsel</span>
+                          <span className="text-muted-foreground">5 min cykeltur</span>
                         </li>
                         <li className="flex justify-between">
-                          <span>Restaurant Søpavillonen</span>
+                          <span>Faaborg Havn</span>
                           <span className="text-muted-foreground">10 min kørsel</span>
                         </li>
                         <li className="flex justify-between">
@@ -307,14 +307,14 @@ export default function Home() {
                           <span className="text-muted-foreground">15 min kørsel</span>
                         </li>
                         <li className="flex justify-between">
-                          <span>København</span>
-                          <span className="text-muted-foreground">1 time kørsel</span>
+                          <span>Odense</span>
+                          <span className="text-muted-foreground">47 min kørsel</span>
                         </li>
                       </ul>
                     </CardContent>
                   </Card>
 
-                  <Card>
+                 {/* <Card>
                     <CardContent className="p-6">
                       <h3 className="font-semibold mb-4">Transport</h3>
                       <ul className="space-y-2 text-sm">
@@ -324,7 +324,7 @@ export default function Home() {
                         <li>✈️ 45 min fra Københavns Lufthavn</li>
                       </ul>
                     </CardContent>
-                  </Card>
+                  </Card>*/}
                 </div>
               </div>
             </div>
