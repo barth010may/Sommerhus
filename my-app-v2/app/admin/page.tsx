@@ -66,10 +66,17 @@ export default function AdminPage() {
     setIsLoading(false)
 
     // Load reservations from localStorage
-    const savedReservations = localStorage.getItem("reservations")
+    /*const savedReservations = localStorage.getItem("reservations")
     if (savedReservations) {
       setReservations(JSON.parse(savedReservations))
-    }
+    }*/
+
+    fetch("/api/bookings")
+      .then((res) => res.json())
+      .then((data) => { 
+        console.log("Fetched bookings:", data)
+        setReservations(data)})
+      .catch((err) => console.error("Failed to load bookings:", err))
   }, [])
 
   // Save reservations to localStorage whenever they change
@@ -109,7 +116,7 @@ export default function AdminPage() {
     })
   }
 
-  const handleAddReservation = () => {
+  const handleAddReservation = async () => {
     if (!startDate || !endDate) {
       toast({
         title: "Missing dates",
@@ -136,16 +143,28 @@ export default function AdminPage() {
       notes: notes || undefined,
     }
 
-    setReservations([...reservations, newReservation])
-    setStartDate(undefined)
-    setEndDate(undefined)
-    setNotes("")
-    setIsAddingReservation(false)
+    try {
+        const res = await fetch("/api/bookings", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(newReservation),
+      })
 
-    toast({
-      title: "Reservation added",
-      description: `Reserved from ${format(startDate, "PP")} to ${format(endDate, "PP")}`,
-    })
+      if (!res.ok) throw new Error("Failed to save reservation")
+
+      setReservations([...reservations, newReservation])
+      setStartDate(undefined)
+      setEndDate(undefined)
+      setNotes("")
+      setIsAddingReservation(false)
+
+      toast({
+        title: "Reservation added",
+        description: `Reserved from ${format(startDate, "PP")} to ${format(endDate, "PP")}`,
+      })   
+    } catch (error) {
+      toast({ title: "Error", description: "Could not save reservation", variant: "destructive" })
+    }
   }
 
   const handleDeleteReservation = (id: string) => {
