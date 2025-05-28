@@ -7,9 +7,8 @@ const client = new MongoClient(uri)
 
 export async function GET() {
   try {
-    await client.connect()
-    const database = client.db("Sommerhus")
-    const bookings = await database.collection("Bookings").find().toArray()
+    const { db } = await connectToDatabase()
+    const bookings = await db.collection("Bookings").find().toArray()
 
     const formattedBookings = bookings.map((booking) => ({
         id: booking._id.toString(),

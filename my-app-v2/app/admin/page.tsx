@@ -39,7 +39,6 @@ type Reservation = {
   id: string
   start: string
   end: string
-  createdAt: string
   notes?: string
 }
 
@@ -139,7 +138,6 @@ export default function AdminPage() {
       id: crypto.randomUUID(),
       start: startDate.toISOString(),
       end: endDate.toISOString(),
-      createdAt: new Date().toISOString(),
       notes: notes || undefined,
     }
 
@@ -152,11 +150,11 @@ export default function AdminPage() {
 
       if (!res.ok) throw new Error("Failed to save reservation")
 
-      setReservations([...reservations, newReservation])
+      /*setReservations([...reservations, newReservation])
       setStartDate(undefined)
       setEndDate(undefined)
       setNotes("")
-      setIsAddingReservation(false)
+      setIsAddingReservation(false)*/
 
       toast({
         title: "Reservation added",
@@ -388,9 +386,6 @@ export default function AdminPage() {
                             days
                           </p>
                           {reservation.notes && <p className="mt-2 text-sm">{reservation.notes}</p>}
-                          <p className="mt-2 text-xs text-muted-foreground">
-                            Added on {format(parseISO(reservation.createdAt), "PPp")}
-                          </p>
                         </div>
                         <Button
                           variant="ghost"
