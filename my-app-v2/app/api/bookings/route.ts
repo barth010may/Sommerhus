@@ -1,5 +1,5 @@
 import { NextResponse } from "next/server";
-import { MongoClient } from "mongodb";
+import { MongoClient, ObjectId } from "mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
 
 const uri = process.env.MONGODB_URI || "";
@@ -48,4 +48,28 @@ export async function POST(req: Request) {
       { status: 500 }
     );
   }
+}
+
+// DELETE a booking by ID
+export async function DELETE(request: Request) {
+  const { id } = await request.json();
+  console.log("Deleting booking with ID:", id);
+
+  if (!id) {
+    return NextResponse.json(
+      { error: "Booking ID is required" },
+      { status: 400 }
+    );
+  }
+
+  const { db } = await connectToDatabase();
+  const deletedBooking = await db
+    .collection("Bookings")
+    .findOneAndDelete({ _id: new ObjectId(id) });
+
+  if (!deletedBooking) {
+    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+  }
+
+  return NextResponse.json({ message: "Booking deleted successfully" });
 }

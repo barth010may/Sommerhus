@@ -1,10 +1,10 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import { useRouter } from "next/navigation"
-import { LogOut, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react"
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
+import { LogOut, Plus, Trash2, ChevronLeft, ChevronRight } from "lucide-react";
 import {
   format,
   parseISO,
@@ -15,15 +15,21 @@ import {
   eachDayOfInterval,
   isSameDay,
   isWithinInterval,
-} from "date-fns"
+} from "date-fns";
 
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import { useToast } from "@/hooks/use-toast"
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
+import { useToast } from "@/hooks/use-toast";
 import {
   Dialog,
   DialogContent,
@@ -31,38 +37,38 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
-} from "@/components/ui/dialog"
-import { cn } from "@/lib/utils"
+} from "@/components/ui/dialog";
+import { cn } from "@/lib/utils";
 
 // Type definitions
 type Reservation = {
-  id: string
-  start: string
-  end: string
-  notes?: string
-}
+  id: string;
+  start: string;
+  end: string;
+  notes?: string;
+};
 
 export default function AdminPage() {
-  const router = useRouter()
-  const { toast } = useToast()
-  const [isAuthenticated, setIsAuthenticated] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
-  const [username, setUsername] = useState("")
-  const [password, setPassword] = useState("")
-  const [reservations, setReservations] = useState<Reservation[]>([])
-  const [startDate, setStartDate] = useState<Date | undefined>(undefined)
-  const [endDate, setEndDate] = useState<Date | undefined>(undefined)
-  const [notes, setNotes] = useState("")
-  const [isAddingReservation, setIsAddingReservation] = useState(false)
-  const [currentMonth, setCurrentMonth] = useState(new Date())
+  const router = useRouter();
+  const { toast } = useToast();
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+  const [username, setUsername] = useState("");
+  const [password, setPassword] = useState("");
+  const [reservations, setReservations] = useState<Reservation[]>([]);
+  const [startDate, setStartDate] = useState<Date | undefined>(undefined);
+  const [endDate, setEndDate] = useState<Date | undefined>(undefined);
+  const [notes, setNotes] = useState("");
+  const [isAddingReservation, setIsAddingReservation] = useState(false);
+  const [currentMonth, setCurrentMonth] = useState(new Date());
 
   // Check if user is authenticated on page load
   useEffect(() => {
-    const authStatus = localStorage.getItem("adminAuthenticated")
+    const authStatus = localStorage.getItem("adminAuthenticated");
     if (authStatus === "true") {
-      setIsAuthenticated(true)
+      setIsAuthenticated(true);
     }
-    setIsLoading(false)
+    setIsLoading(false);
 
     // Load reservations from localStorage
     /*const savedReservations = localStorage.getItem("reservations")
@@ -72,48 +78,49 @@ export default function AdminPage() {
 
     fetch("/api/bookings")
       .then((res) => res.json())
-      .then((data) => { 
-        console.log("Fetched bookings:", data)
-        setReservations(data)})
-      .catch((err) => console.error("Failed to load bookings:", err))
-  }, [])
+      .then((data) => {
+        console.log("Fetched bookings:", data);
+        setReservations(data);
+      })
+      .catch((err) => console.error("Failed to load bookings:", err));
+  }, []);
 
   // Save reservations to localStorage whenever they change
   useEffect(() => {
     if (reservations.length > 0) {
-      localStorage.setItem("reservations", JSON.stringify(reservations))
+      localStorage.setItem("reservations", JSON.stringify(reservations));
     }
-  }, [reservations])
+  }, [reservations]);
 
   const handleLogin = (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // In a real application, you would validate against a secure backend
     // This is just a simple example - NEVER do authentication this way in production
     if (username === "admin" && password === "password123") {
-      localStorage.setItem("adminAuthenticated", "true")
-      setIsAuthenticated(true)
+      localStorage.setItem("adminAuthenticated", "true");
+      setIsAuthenticated(true);
       toast({
         title: "Login successful",
         description: "Welcome to the admin dashboard",
-      })
+      });
     } else {
       toast({
         title: "Login failed",
         description: "Invalid username or password",
         variant: "destructive",
-      })
+      });
     }
-  }
+  };
 
   const handleLogout = () => {
-    localStorage.removeItem("adminAuthenticated")
-    setIsAuthenticated(false)
+    localStorage.removeItem("adminAuthenticated");
+    setIsAuthenticated(false);
     toast({
       title: "Logged out",
       description: "You have been logged out successfully",
-    })
-  }
+    });
+  };
 
   const handleAddReservation = async () => {
     if (!startDate || !endDate) {
@@ -121,8 +128,8 @@ export default function AdminPage() {
         title: "Missing dates",
         description: "Please select both start and end dates",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     if (endDate < startDate) {
@@ -130,8 +137,8 @@ export default function AdminPage() {
         title: "Invalid date range",
         description: "End date must be after start date",
         variant: "destructive",
-      })
-      return
+      });
+      return;
     }
 
     const newReservation: Reservation = {
@@ -139,16 +146,16 @@ export default function AdminPage() {
       start: startDate.toISOString(),
       end: endDate.toISOString(),
       notes: notes || undefined,
-    }
+    };
 
     try {
-        const res = await fetch("/api/bookings", {
+      const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(newReservation),
-      })
+      });
 
-      if (!res.ok) throw new Error("Failed to save reservation")
+      if (!res.ok) throw new Error("Failed to save reservation");
 
       /*setReservations([...reservations, newReservation])
       setStartDate(undefined)
@@ -158,58 +165,88 @@ export default function AdminPage() {
 
       toast({
         title: "Reservation added",
-        description: `Reserved from ${format(startDate, "PP")} to ${format(endDate, "PP")}`,
-      })   
+        description: `Reserved from ${format(startDate, "PP")} to ${format(
+          endDate,
+          "PP"
+        )}`,
+      });
     } catch (error) {
-      toast({ title: "Error", description: "Could not save reservation", variant: "destructive" })
+      toast({
+        title: "Error",
+        description: "Could not save reservation",
+        variant: "destructive",
+      });
     }
-  }
+  };
 
-  const handleDeleteReservation = (id: string) => {
-    setReservations(reservations.filter((reservation) => reservation.id !== id))
+  const handleDeleteReservation = async (id: string) => {
+    try {
+      const res = await fetch("/api/bookings", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
+      });
+    } catch (error) {
+      console.error("Failed to delete reservation:", error);
+      toast({
+        title: "Error",
+        description: "Could not delete reservation",
+        variant: "destructive",
+      });
+      return;
+    }
+    setReservations(
+      reservations.filter((reservation) => reservation.id !== id)
+    );
     toast({
       title: "Reservation deleted",
       description: "The reservation has been removed",
-    })
-  }
+    });
+  };
 
   // Navigate to previous month
   const prevMonth = () => {
-    setCurrentMonth(subMonths(currentMonth, 1))
-  }
+    setCurrentMonth(subMonths(currentMonth, 1));
+  };
 
   // Navigate to next month
   const nextMonth = () => {
-    setCurrentMonth(addMonths(currentMonth, 1))
-  }
+    setCurrentMonth(addMonths(currentMonth, 1));
+  };
 
   // Check if a date is within any reservation
   const isDateReserved = (date: Date) => {
     return reservations.some((reservation) => {
-      const start = new Date(reservation.start)
-      const end = new Date(reservation.end)
-      return isWithinInterval(date, { start, end })
-    })
-  }
+      const start = new Date(reservation.start);
+      const end = new Date(reservation.end);
+      return isWithinInterval(date, { start, end });
+    });
+  };
 
   // Get reservation that contains a specific date
   const getReservationForDate = (date: Date) => {
     return reservations.find((reservation) => {
-      const start = new Date(reservation.start)
-      const end = new Date(reservation.end)
-      return isWithinInterval(date, { start, end })
-    })
-  }
+      const start = new Date(reservation.start);
+      const end = new Date(reservation.end);
+      return isWithinInterval(date, { start, end });
+    });
+  };
 
   // Generate days for the current month view
   const getDaysInMonth = () => {
-    const start = startOfMonth(currentMonth)
-    const end = endOfMonth(currentMonth)
-    return eachDayOfInterval({ start, end })
-  }
+    const start = startOfMonth(currentMonth);
+    const end = endOfMonth(currentMonth);
+    return eachDayOfInterval({ start, end });
+  };
 
   if (isLoading) {
-    return <div className="flex items-center justify-center min-h-screen">Loading...</div>
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        Loading...
+      </div>
+    );
   }
 
   if (!isAuthenticated) {
@@ -218,13 +255,20 @@ export default function AdminPage() {
         <Card className="w-full max-w-md">
           <CardHeader>
             <CardTitle>Admin Login</CardTitle>
-            <CardDescription>Login to access the admin dashboard</CardDescription>
+            <CardDescription>
+              Login to access the admin dashboard
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <form onSubmit={handleLogin} className="space-y-4">
               <div className="space-y-2">
                 <Label htmlFor="username">Username</Label>
-                <Input id="username" value={username} onChange={(e) => setUsername(e.target.value)} required />
+                <Input
+                  id="username"
+                  value={username}
+                  onChange={(e) => setUsername(e.target.value)}
+                  required
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="password">Password</Label>
@@ -243,7 +287,7 @@ export default function AdminPage() {
           </CardContent>
         </Card>
       </div>
-    )
+    );
   }
 
   return (
@@ -281,7 +325,9 @@ export default function AdminPage() {
                     <ChevronLeft className="w-4 h-4" />
                     <span className="sr-only">Previous month</span>
                   </Button>
-                  <h3 className="text-xl font-medium">{format(currentMonth, "MMMM yyyy")}</h3>
+                  <h3 className="text-xl font-medium">
+                    {format(currentMonth, "MMMM yyyy")}
+                  </h3>
                   <Button variant="outline" size="sm" onClick={nextMonth}>
                     <ChevronRight className="w-4 h-4" />
                     <span className="sr-only">Next month</span>
@@ -289,23 +335,37 @@ export default function AdminPage() {
                 </div>
 
                 <div className="grid grid-cols-7 gap-1 mb-2 text-center">
-                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map((day) => (
-                    <div key={day} className="text-sm font-medium text-muted-foreground">
-                      {day}
-                    </div>
-                  ))}
+                  {["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(
+                    (day) => (
+                      <div
+                        key={day}
+                        className="text-sm font-medium text-muted-foreground"
+                      >
+                        {day}
+                      </div>
+                    )
+                  )}
                 </div>
 
                 <div className="grid grid-cols-7 gap-1">
                   {Array.from({
-                    length: new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay(),
+                    length: new Date(
+                      currentMonth.getFullYear(),
+                      currentMonth.getMonth(),
+                      1
+                    ).getDay(),
                   }).map((_, i) => (
-                    <div key={`empty-${i}`} className="h-20 p-1 border rounded-md opacity-50 bg-gray-50"></div>
+                    <div
+                      key={`empty-${i}`}
+                      className="h-20 p-1 border rounded-md opacity-50 bg-gray-50"
+                    ></div>
                   ))}
                   {getDaysInMonth().map((day) => {
-                    const isReserved = isDateReserved(day)
-                    const reservation = isReserved ? getReservationForDate(day) : null
-                    const isToday = isSameDay(day, new Date())
+                    const isReserved = isDateReserved(day);
+                    const reservation = isReserved
+                      ? getReservationForDate(day)
+                      : null;
+                    const isToday = isSameDay(day, new Date());
 
                     return (
                       <div
@@ -313,7 +373,7 @@ export default function AdminPage() {
                         className={cn(
                           "h-20 p-1 border rounded-md",
                           isReserved ? "bg-red-50 border-red-200" : "bg-white",
-                          isToday && "border-green-500",
+                          isToday && "border-green-500"
                         )}
                       >
                         <div className="flex flex-col h-full">
@@ -321,7 +381,7 @@ export default function AdminPage() {
                             className={cn(
                               "text-right text-sm font-medium",
                               isReserved && "text-red-600",
-                              isToday && "text-green-600",
+                              isToday && "text-green-600"
                             )}
                           >
                             {format(day, "d")}
@@ -335,7 +395,7 @@ export default function AdminPage() {
                           )}
                         </div>
                       </div>
-                    )
+                    );
                   })}
                 </div>
 
@@ -361,7 +421,9 @@ export default function AdminPage() {
             {reservations.length === 0 ? (
               <Card>
                 <CardContent className="flex flex-col items-center justify-center p-6 text-center">
-                  <p className="mb-4 text-muted-foreground">No reservations found</p>
+                  <p className="mb-4 text-muted-foreground">
+                    No reservations found
+                  </p>
                   <Button onClick={() => setIsAddingReservation(true)}>
                     <Plus className="w-4 h-4 mr-2" />
                     Add Your First Reservation
@@ -376,21 +438,27 @@ export default function AdminPage() {
                       <div className="flex items-start justify-between">
                         <div>
                           <h3 className="text-lg font-medium">
-                            {format(parseISO(reservation.start), "PP")} - {format(parseISO(reservation.end), "PP")}
+                            {format(parseISO(reservation.start), "PP")} -{" "}
+                            {format(parseISO(reservation.end), "PP")}
                           </h3>
                           <p className="text-sm text-muted-foreground">
                             {Math.ceil(
-                              (parseISO(reservation.end).getTime() - parseISO(reservation.start).getTime()) /
-                                (1000 * 60 * 60 * 24),
+                              (parseISO(reservation.end).getTime() -
+                                parseISO(reservation.start).getTime()) /
+                                (1000 * 60 * 60 * 24)
                             )}{" "}
                             days
                           </p>
-                          {reservation.notes && <p className="mt-2 text-sm">{reservation.notes}</p>}
+                          {reservation.notes && (
+                            <p className="mt-2 text-sm">{reservation.notes}</p>
+                          )}
                         </div>
                         <Button
                           variant="ghost"
                           size="icon"
-                          onClick={() => handleDeleteReservation(reservation.id)}
+                          onClick={() =>
+                            handleDeleteReservation(reservation.id)
+                          }
                           className="text-red-500 hover:text-red-700 hover:bg-red-50"
                         >
                           <Trash2 className="w-4 h-4" />
@@ -411,7 +479,9 @@ export default function AdminPage() {
         <DialogContent className="sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Add New Reservation</DialogTitle>
-            <DialogDescription>Block dates in the calendar for a new reservation.</DialogDescription>
+            <DialogDescription>
+              Block dates in the calendar for a new reservation.
+            </DialogDescription>
           </DialogHeader>
 
           <div className="grid gap-6 py-4">
@@ -449,7 +519,10 @@ export default function AdminPage() {
           </div>
 
           <DialogFooter>
-            <Button variant="outline" onClick={() => setIsAddingReservation(false)}>
+            <Button
+              variant="outline"
+              onClick={() => setIsAddingReservation(false)}
+            >
               Cancel
             </Button>
             <Button onClick={handleAddReservation}>Add Reservation</Button>
@@ -457,5 +530,5 @@ export default function AdminPage() {
         </DialogContent>
       </Dialog>
     </div>
-  )
+  );
 }
