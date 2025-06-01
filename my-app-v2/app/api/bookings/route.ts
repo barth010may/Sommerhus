@@ -5,6 +5,7 @@ import { connectToDatabase } from "@/lib/mongodb";
 const uri = process.env.MONGODB_URI || "";
 const client = new MongoClient(uri);
 
+// GET all bookings
 export async function GET() {
   try {
     const { db } = await connectToDatabase();
@@ -30,6 +31,7 @@ export async function GET() {
   }
 }
 
+// POST a new booking
 export async function POST(req: Request) {
   const data = await req.json();
 

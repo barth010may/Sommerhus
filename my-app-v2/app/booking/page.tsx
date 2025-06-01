@@ -1,70 +1,102 @@
-"use client"
+"use client";
 
-import type React from "react"
+import type React from "react";
 
-import { useState, useEffect } from "react"
-import Link from "next/link"
-import { useRouter } from "next/navigation"
-import { CalendarIcon, ChevronLeft } from "lucide-react"
-import Image from "next/image"
-import emailjs from "emailjs-com"
-import { format } from "date-fns"
+import { useState, useEffect } from "react";
+import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { CalendarIcon, ChevronLeft } from "lucide-react";
+import Image from "next/image";
+import emailjs from "emailjs-com";
+import { format } from "date-fns";
 
-import { cn } from "@/lib/utils"
-import { Button } from "@/components/ui/button"
-import { Calendar } from "@/components/ui/calendar"
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
-import { Input } from "@/components/ui/input"
-import { Label } from "@/components/ui/label"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
-import { Textarea } from "@/components/ui/textarea"
-import { isDateReserved } from "@/lib/reservation-utils"
+import { cn } from "@/lib/utils";
+import { Button } from "@/components/ui/button";
+import { Calendar } from "@/components/ui/calendar";
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "@/components/ui/card";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Textarea } from "@/components/ui/textarea";
+import { isDateReserved } from "@/lib/reservation-utils";
 
 export default function BookingPage() {
-  const router = useRouter()
-  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined)
-  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined)
-  const [guests, setGuests] = useState<string>("2")
-  const [name, setName] = useState("")
-  const [email, setEmail] = useState("")
-  const [phone, setPhone] = useState("")
-  const [specialRequests, setSpecialRequests] = useState("")
-  const [reservations, setReservations] = useState<any[]>([])
+  const router = useRouter();
+  const [checkIn, setCheckIn] = useState<Date | undefined>(undefined);
+  const [checkOut, setCheckOut] = useState<Date | undefined>(undefined);
+  const [dateRange, setDateRange] = useState<
+    { from: Date; to?: Date } | undefined
+  >(undefined);
+  const [guests, setGuests] = useState<string>("2");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [specialRequests, setSpecialRequests] = useState("");
+  const [reservations, setReservations] = useState<any[]>([]);
 
   // Load reservations from localStorage on component mount
   useEffect(() => {
-    const savedReservations = localStorage.getItem("reservations")
+    const savedReservations = localStorage.getItem("reservations");
     if (savedReservations) {
-      setReservations(JSON.parse(savedReservations))
+      setReservations(JSON.parse(savedReservations));
     }
-  }, [])
+  }, []);
+  useEffect(() => {
+    if (dateRange?.from && dateRange?.to) {
+      setCheckIn(dateRange.from);
+      setCheckOut(dateRange.to);
+    } else {
+      setCheckIn(undefined);
+      setCheckOut(undefined);
+    }
+  }, [dateRange]);
 
   // Custom component to render calendar days with visual indication of reserved dates
   const DayContent = (day: Date) => {
-    const isReserved = isDateReserved(day)
+    const isReserved = isDateReserved(day);
     return (
       <div
         className={cn(
           "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-          isReserved && "bg-red-100 text-red-900 line-through opacity-70",
+          isReserved && "bg-red-100 text-red-900 line-through opacity-70"
         )}
       >
-        <div className="flex h-full w-full items-center justify-center rounded-md">{format(day, "d")}</div>
+        <div className="flex h-full w-full items-center justify-center rounded-md">
+          {format(day, "d")}
+        </div>
       </div>
-    )
-  }
+    );
+  };
 
   // Calculate total price (number of nights * price per night)
   const calculateTotalPrice = () => {
-    if (!checkIn || !checkOut) return 0
+    if (!checkIn || !checkOut) return 0;
 
-    const nights = Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))
-    return nights * 150 // 150 DKK per night
-  }
+    const nights = Math.ceil(
+      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
+    );
+    return nights * 850; // 150 DKK per night
+  };
 
   const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault()
+    e.preventDefault();
 
     // In a real application, you would send this data to your backend
     const bookingData = {
@@ -76,9 +108,9 @@ export default function BookingPage() {
       phone,
       specialRequests,
       totalPrice: calculateTotalPrice(),
-    }
+    };
 
-    console.log("Booking submitted:", bookingData)
+    console.log("Booking submitted:", bookingData);
 
     // Send email using EmailJS
     try {
@@ -91,16 +123,16 @@ export default function BookingPage() {
         phone,
         specialRequests: specialRequests || "None",
         totalPrice: `${calculateTotalPrice()} DKK`,
-      }
+      };
 
       const response = await emailjs.send(
         "service_or79l6j", // Your EmailJS service ID
         "template_61xxjng", // Your EmailJS template ID
         templateParams,
-        "eNLGD-6jaeg6HuZRm", // Your EmailJS user ID
-      )
+        "eNLGD-6jaeg6HuZRm" // Your EmailJS user ID
+      );
 
-      console.log("Email sent successfully:", response.status, response.text)
+      console.log("Email sent successfully:", response.status, response.text);
 
       // Navigate to confirmation page
       const queryString = new URLSearchParams({
@@ -112,26 +144,26 @@ export default function BookingPage() {
         phone,
         specialRequests,
         totalPrice: calculateTotalPrice().toString(),
-      }).toString()
+      }).toString();
 
-      router.push(`/booking/confirmation?${queryString}`)
+      router.push(`/booking/confirmation?${queryString}`);
     } catch (error) {
-      console.error("Failed to send email:", error)
-      alert("Failed to send booking confirmation email. Please try again.")
+      console.error("Failed to send email:", error);
+      alert("Failed to send booking confirmation email. Please try again.");
     }
-  }
+  };
 
   // Check if a date range has any reserved dates in it
   const hasReservedDatesInRange = (start: Date, end: Date) => {
-    const currentDate = new Date(start)
+    const currentDate = new Date(start);
     while (currentDate <= end) {
       if (isDateReserved(new Date(currentDate))) {
-        return true
+        return true;
       }
-      currentDate.setDate(currentDate.getDate() + 1)
+      currentDate.setDate(currentDate.getDate() + 1);
     }
-    return false
-  }
+    return false;
+  };
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -166,7 +198,8 @@ export default function BookingPage() {
               <CardHeader>
                 <CardTitle>Booking Detaljer</CardTitle>
                 <CardDescription>
-                  Vælg dine ønskede datoer og angiv dine oplysninger for at booke sommerhuset.
+                  Vælg dine ønskede datoer og angiv dine oplysninger for at
+                  booke sommerhuset.
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -179,12 +212,67 @@ export default function BookingPage() {
                         <Popover>
                           <PopoverTrigger asChild>
                             <Button
+                              id="date"
+                              variant="outline"
+                              className={cn(
+                                "justify-start text-left font-normal",
+                                !dateRange && "text-muted-foreground"
+                              )}
+                            >
+                              <CalendarIcon className="mr-2 h-4 w-4" />
+                              {dateRange?.from && dateRange?.to ? (
+                                <>
+                                  {format(dateRange.from, "dd/MM/yyyy")} -{" "}
+                                  {format(dateRange.to, "dd/MM/yyyy")}
+                                </>
+                              ) : (
+                                "Vælg periode"
+                              )}
+                            </Button>
+                          </PopoverTrigger>
+                          <PopoverContent className="w-auto p-0" align="start">
+                            <Calendar
+                              mode="range"
+                              selected={dateRange}
+                              onSelect={(range) => {
+                                if (
+                                  range?.from &&
+                                  range?.to &&
+                                  hasReservedDatesInRange(range.from, range.to)
+                                ) {
+                                  alert(
+                                    "Der er reserverede datoer i det valgte interval."
+                                  );
+                                  return;
+                                }
+                                setDateRange(range);
+                              }}
+                              numberOfMonths={2}
+                              disabled={(date) =>
+                                date < new Date() || isDateReserved(date)
+                              }
+                              components={{
+                                day: ({ date }) => DayContent(date),
+                              }}
+                              initialFocus
+                            />
+                          </PopoverContent>
+                        </Popover>
+
+                        {/*<Popover>
+                          <PopoverTrigger asChild>
+                            <Button
                               id="check-in"
                               variant="outline"
-                              className={cn("justify-start text-left font-normal", !checkIn && "text-muted-foreground")}
+                              className={cn(
+                                "justify-start text-left font-normal",
+                                !checkIn && "text-muted-foreground"
+                              )}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkIn ? checkIn.toLocaleDateString() : "Vælg dato"}
+                              {checkIn
+                                ? checkIn.toLocaleDateString()
+                                : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -193,7 +281,9 @@ export default function BookingPage() {
                               selected={checkIn}
                               onSelect={setCheckIn}
                               disabled={(date) =>
-                                date < new Date() || isDateReserved(date) || (checkOut ? date >= checkOut : false)
+                                date < new Date() ||
+                                isDateReserved(date) ||
+                                (checkOut ? date >= checkOut : false)
                               }
                               initialFocus
                               components={{
@@ -212,11 +302,13 @@ export default function BookingPage() {
                               variant="outline"
                               className={cn(
                                 "justify-start text-left font-normal",
-                                !checkOut && "text-muted-foreground",
+                                !checkOut && "text-muted-foreground"
                               )}
                             >
                               <CalendarIcon className="w-4 h-4 mr-2" />
-                              {checkOut ? checkOut.toLocaleDateString() : "Vælg dato"}
+                              {checkOut
+                                ? checkOut.toLocaleDateString()
+                                : "Vælg dato"}
                             </Button>
                           </PopoverTrigger>
                           <PopoverContent className="w-auto p-0" align="start">
@@ -228,15 +320,17 @@ export default function BookingPage() {
                                   // Check if there are any reserved dates in the range
                                   if (hasReservedDatesInRange(checkIn, date)) {
                                     alert(
-                                      "Der er reserverede datoer i det valgte interval. Vælg venligst et andet interval.",
-                                    )
-                                    return
+                                      "Der er reserverede datoer i det valgte interval. Vælg venligst et andet interval."
+                                    );
+                                    return;
                                   }
                                 }
-                                setCheckOut(date)
+                                setCheckOut(date);
                               }}
                               disabled={(date) =>
-                                date < new Date() || isDateReserved(date) || (checkIn ? date <= checkIn : false)
+                                date < new Date() ||
+                                isDateReserved(date) ||
+                                (checkIn ? date <= checkIn : false)
                               }
                               initialFocus
                               components={{
@@ -244,7 +338,7 @@ export default function BookingPage() {
                               }}
                             />
                           </PopoverContent>
-                        </Popover>
+                        </Popover>*/}
                       </div>
                     </div>
                     <div className="flex items-center gap-2 mt-2 text-xs text-muted-foreground">
@@ -274,7 +368,12 @@ export default function BookingPage() {
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="grid gap-2">
                         <Label htmlFor="name">Navn</Label>
-                        <Input id="name" value={name} onChange={(e) => setName(e.target.value)} required />
+                        <Input
+                          id="name"
+                          value={name}
+                          onChange={(e) => setName(e.target.value)}
+                          required
+                        />
                       </div>
                       <div className="grid gap-2">
                         <Label htmlFor="email">Email</Label>
@@ -289,10 +388,18 @@ export default function BookingPage() {
                     </div>
                     <div className="grid gap-2">
                       <Label htmlFor="phone">Telefon Nummer</Label>
-                      <Input id="phone" type="tel" value={phone} onChange={(e) => setPhone(e.target.value)} required />
+                      <Input
+                        id="phone"
+                        type="tel"
+                        value={phone}
+                        onChange={(e) => setPhone(e.target.value)}
+                        required
+                      />
                     </div>
                     <div className="grid gap-2">
-                      <Label htmlFor="special-requests">Specielle Ønsker (valgfrit)</Label>
+                      <Label htmlFor="special-requests">
+                        Specielle Ønsker (valgfrit)
+                      </Label>
                       <Textarea
                         id="special-requests"
                         value={specialRequests}
@@ -306,7 +413,9 @@ export default function BookingPage() {
                     <Button
                       type="submit"
                       className="bg-green-600 hover:bg-green-700"
-                      disabled={!checkIn || !checkOut || !name || !email || !phone}
+                      disabled={
+                        !checkIn || !checkOut || !name || !email || !phone
+                      }
                     >
                       Bekræft Bestilling
                     </Button>
@@ -328,11 +437,17 @@ export default function BookingPage() {
                 <div className="space-y-2">
                   <div className="flex justify-between text-sm">
                     <span>Check-in</span>
-                    <span>{checkIn ? checkIn.toLocaleDateString() : "Not selected"}</span>
+                    <span>
+                      {checkIn ? checkIn.toLocaleDateString() : "Not selected"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Check-out</span>
-                    <span>{checkOut ? checkOut.toLocaleDateString() : "Not selected"}</span>
+                    <span>
+                      {checkOut
+                        ? checkOut.toLocaleDateString()
+                        : "Not selected"}
+                    </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Antal Gæster</span>
@@ -343,10 +458,16 @@ export default function BookingPage() {
                   <div className="pt-4 border-t">
                     <div className="flex justify-between">
                       <span className="font-medium">Total</span>
-                      <span className="font-medium">{calculateTotalPrice()} DKK</span>
+                      <span className="font-medium">
+                        {calculateTotalPrice()} DKK
+                      </span>
                     </div>
                     <p className="mt-1 text-xs text-muted-foreground">
-                      {Math.ceil((checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24))} nætter
+                      {Math.ceil(
+                        (checkOut.getTime() - checkIn.getTime()) /
+                          (1000 * 60 * 60 * 24)
+                      )}{" "}
+                      nætter
                     </p>
                   </div>
                 )}
@@ -356,5 +477,5 @@ export default function BookingPage() {
         </div>
       </main>
     </div>
-  )
+  );
 }
