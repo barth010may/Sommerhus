@@ -8,6 +8,7 @@
   - Retrieve data from mongodb ✅
   - Insert bookings into mongodb in correct format ✅
   - Delete bookings from the manage booking overview ✅
+- [ ] Connect admin login systemto mongodb for more secure login process
 - [ ] Adjust Pricing
   - 6000 DKK for 1 uge
   - 2500 DKK for en weekend
