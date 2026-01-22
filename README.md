@@ -5,6 +5,7 @@ A next.js booking website for our summerhouse rental.
 ## TODO:
 
 - [ ] Update landing page header to picture slider at the top (To create more attention to the house)
+- [ ] Update gmail API connection (If necessary)
 - [x] Update calendar overview to include disabled reserved dates
 - [x] Add Google Maps link to show location on map
 - [x] Add proper database functionality
