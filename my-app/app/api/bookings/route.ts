@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
-
-const uri = process.env.MONGODB_URI || "";
-const client = new MongoClient(uri);
 
 // GET all bookings
 export async function GET() {
@@ -26,8 +23,6 @@ export async function GET() {
       { error: "Failed to fetch bookings" },
       { status: 500 }
     );
-  } finally {
-    await client.close();
   }
 }
 
@@ -37,7 +32,11 @@ export async function POST(req: Request) {
 
   try {
     const { db } = await connectToDatabase();
-    const newBooking = await db.collection("Bookings").insertOne(data);
+    
+    // Don't store the client-provided id, let MongoDB generate _id
+    const { id, ...bookingData } = data;
+    
+    const newBooking = await db.collection("Bookings").insertOne(bookingData);
 
     return NextResponse.json(
       { insertedId: newBooking.insertedId },
@@ -55,7 +54,6 @@ export async function POST(req: Request) {
 // DELETE a booking by ID
 export async function DELETE(request: Request) {
   const { id } = await request.json();
-  console.log("Deleting booking with ID:", id);
 
   if (!id) {
     return NextResponse.json(
@@ -64,14 +62,23 @@ export async function DELETE(request: Request) {
     );
   }
 
-  const { db } = await connectToDatabase();
-  const deletedBooking = await db
-    .collection("Bookings")
-    .findOneAndDelete({ _id: new ObjectId(id) });
+  try {
+    const { db } = await connectToDatabase();
+    const objectId = new ObjectId(id);
+    const deletedBooking = await db
+      .collection("Bookings")
+      .findOneAndDelete({ _id: objectId });
 
-  if (!deletedBooking) {
-    return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    if (!deletedBooking || !deletedBooking._id) {
+      return NextResponse.json({ error: "Booking not found" }, { status: 404 });
+    }
+
+    return NextResponse.json({ message: "Booking deleted successfully" }, { status: 200 });
+  } catch (error) {
+    console.error("Error deleting booking:", error);
+    return NextResponse.json(
+      { error: "Internal server error" },
+      { status: 500 }
+    );
   }
-
-  return NextResponse.json({ message: "Booking deleted successfully" });
 }

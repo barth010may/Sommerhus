@@ -36,14 +36,14 @@ function ConfirmationContent() {
             <Check className="w-6 h-6 text-green-600" />
           </div>
         </div>
-        <CardTitle className="text-2xl">Booking Bekræftet!</CardTitle>
+        <CardTitle className="text-2xl">Anmodning modtaget</CardTitle>
         <CardDescription>
-          Tak, {name || "Gæst"}! Din booking er bekræftet.
+          Tak, {name || "Gæst"}! Vi har modtaget din booking-anmodning.
         </CardDescription>
       </CardHeader>
       <CardContent className="space-y-4">
         <div className="p-4 rounded-lg bg-green-50">
-          <h3 className="mb-2 font-medium">Booking Detaljer</h3>
+          <h3 className="mb-2 font-medium">Anmodning Detaljer</h3>
           <div className="grid grid-cols-2 gap-2 text-sm">
             <div className="text-muted-foreground">Navn:</div>
             <div>{name || "N/A"}</div>
@@ -63,15 +63,13 @@ function ConfirmationContent() {
             <div>{guests || "N/A"}</div>
             <div className="text-muted-foreground">Specielle Ønsker:</div>
             <div>{specialRequests || "Ingen"}</div>
-            <div className="text-muted-foreground">Samlet Pris:</div>
-            <div>{totalPrice ? `${parseFloat(totalPrice).toFixed(2)} DKK` : "N/A"}</div>
           </div>
         </div>
         <div className="space-y-2">
           <h3 className="font-medium">Hvad er det næste?</h3>
           <p className="text-sm text-muted-foreground">
-            Tak for din booking! Vi glæder os til at byde dig velkommen i vores sommerhus.
-            Vi kontakter dig så snart som muligt for at aftale videre detaljer af din booking.
+            Din anmodning er sendt til administrator. Vi kontakter dig hurtigst muligt for at bekræfte din booking
+            og aftale de sidste detaljer.
           </p>
         </div>
       </CardContent>
@@ -82,7 +80,7 @@ function ConfirmationContent() {
         <Button variant="outline" className="w-full" asChild>
           <Link href="/booking">
             <ChevronLeft className="w-4 h-4 mr-2" />
-            Lav endnu en booking
+            Lav endnu en anmodning
           </Link>
         </Button>
       </CardFooter>
