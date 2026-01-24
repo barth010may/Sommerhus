@@ -11,6 +11,7 @@ import emailjs from "emailjs-com";
 import { format } from "date-fns";
 
 import { cn } from "@/lib/utils";
+import { triggerConfetti } from "@/components/confetti";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import {
@@ -50,13 +51,24 @@ export default function BookingPage() {
   const [phone, setPhone] = useState("");
   const [specialRequests, setSpecialRequests] = useState("");
   const [reservations, setReservations] = useState<any[]>([]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitSuccess, setSubmitSuccess] = useState(false);
+  const [lastInquiry, setLastInquiry] = useState<any | null>(null);
 
-  // Load reservations from localStorage on component mount
+  // Load reservations from MongoDB API on component mount
   useEffect(() => {
-    const savedReservations = localStorage.getItem("reservations");
-    if (savedReservations) {
-      setReservations(JSON.parse(savedReservations));
-    }
+    const fetchReservations = async () => {
+      try {
+        const res = await fetch("/api/bookings");
+        const data = await res.json();
+        console.log("Fetched bookings:", data);
+        setReservations(data);
+      } catch (err) {
+        console.error("Failed to load bookings:", err);
+      }
+    };
+    
+    fetchReservations();
   }, []);
   useEffect(() => {
     if (dateRange?.from && dateRange?.to) {
@@ -68,91 +80,6 @@ export default function BookingPage() {
     }
   }, [dateRange]);
 
-  // Custom component to render calendar days with visual indication of reserved dates
-  const DayContent = (day: Date) => {
-    const isReserved = isDateReserved(day);
-    return (
-      <div
-        className={cn(
-          "h-9 w-9 p-0 font-normal aria-selected:opacity-100",
-          isReserved && "bg-red-100 text-red-900 line-through opacity-70"
-        )}
-      >
-        <div className="flex h-full w-full items-center justify-center rounded-md">
-          {format(day, "d")}
-        </div>
-      </div>
-    );
-  };
-
-  // Calculate total price (number of nights * price per night)
-  const calculateTotalPrice = () => {
-    if (!checkIn || !checkOut) return 0;
-
-    const nights = Math.ceil(
-      (checkOut.getTime() - checkIn.getTime()) / (1000 * 60 * 60 * 24)
-    );
-    return nights * 850; // 150 DKK per night
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // In a real application, you would send this data to your backend
-    const bookingData = {
-      checkIn,
-      checkOut,
-      guests,
-      name,
-      email,
-      phone,
-      specialRequests,
-      totalPrice: calculateTotalPrice(),
-    };
-
-    console.log("Booking submitted:", bookingData);
-
-    // Send email using EmailJS
-    try {
-      const templateParams = {
-        checkIn: checkIn?.toLocaleDateString() || "N/A",
-        checkOut: checkOut?.toLocaleDateString() || "N/A",
-        guests,
-        name,
-        email,
-        phone,
-        specialRequests: specialRequests || "None",
-        totalPrice: `${calculateTotalPrice()} DKK`,
-      };
-
-      const response = await emailjs.send(
-        "service_or79l6j", // Your EmailJS service ID
-        "template_61xxjng", // Your EmailJS template ID
-        templateParams,
-        "eNLGD-6jaeg6HuZRm" // Your EmailJS user ID
-      );
-
-      console.log("Email sent successfully:", response.status, response.text);
-
-      // Navigate to confirmation page
-      const queryString = new URLSearchParams({
-        checkIn: checkIn?.toISOString() || "",
-        checkOut: checkOut?.toISOString() || "",
-        guests,
-        name,
-        email,
-        phone,
-        specialRequests,
-        totalPrice: calculateTotalPrice().toString(),
-      }).toString();
-
-      router.push(`/booking/confirmation?${queryString}`);
-    } catch (error) {
-      console.error("Failed to send email:", error);
-      alert("Failed to send booking confirmation email. Please try again.");
-    }
-  };
-
   // Check if a date range has any reserved dates in it
   const hasReservedDatesInRange = (start: Date, end: Date) => {
     const currentDate = new Date(start);
@@ -163,6 +90,71 @@ export default function BookingPage() {
       currentDate.setDate(currentDate.getDate() + 1);
     }
     return false;
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+
+    try {
+      const bookingData = {
+        checkIn,
+        checkOut,
+        guests,
+        name,
+        email,
+        phone,
+        specialRequests,
+      };
+      // Send email to admin
+      const adminTemplateParams = {
+        checkIn: checkIn?.toLocaleDateString() || "N/A",
+        checkOut: checkOut?.toLocaleDateString() || "N/A",
+        guests,
+        name,
+        email,
+        phone,
+        specialRequests: specialRequests || "None",
+        numberOfNights: Math.ceil(
+          (checkOut!.getTime() - checkIn!.getTime()) / (1000 * 60 * 60 * 24)
+        ),
+      };
+
+      const response = await emailjs.send(
+        "service_or79l6j", // Your EmailJS service ID
+        "template_admin_booking", // Admin template ID
+        adminTemplateParams,
+        "eNLGD-6jaeg6HuZRm" // Your EmailJS user ID
+      );
+
+      console.log("Admin email sent successfully:", response.status);
+
+      // Save submitted inquiry so the overview can show accurate details
+      setLastInquiry(bookingData);
+
+      // Show success message
+      setSubmitSuccess(true);
+      // Fire confetti
+      try {
+        triggerConfetti({ count: 60 });
+      } catch (e) {
+        /* ignore */
+      }
+      // Reset form
+      setCheckIn(undefined);
+      setCheckOut(undefined);
+      setDateRange(undefined);
+      setName("");
+      setEmail("");
+      setPhone("");
+      setSpecialRequests("");
+      setGuests("2");
+    } catch (error) {
+      console.error("Failed to send inquiry:", error);
+      alert("Failed to submit booking inquiry. Please try again.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
@@ -203,9 +195,22 @@ export default function BookingPage() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleSubmit} className="space-y-6">
-                  <div className="space-y-4">
-                    <h3 className="font-medium">Datoer</h3>
+                {submitSuccess ? (
+                  <div className="rounded-lg bg-green-50 border border-green-200 p-6 text-center space-y-3">
+                    <h3 className="text-lg font-semibold text-green-900">
+                      Tak for din anmodning!
+                    </h3>
+                    <p className="text-green-800">
+                      Tusind tak for din booking-anmodning. Vi vil kontakte dig snart på email eller telefon.
+                    </p>
+                    <p className="text-sm text-green-700">
+                      Vi plejer at tage kontakt inden for 1-2 dage 😊
+                    </p>
+                  </div>
+                ) : (
+                  <form onSubmit={handleSubmit} className="space-y-6">
+                    <div className="space-y-4">
+                      <h3 className="font-medium">Datoer</h3>
                     <div className="grid gap-4 sm:grid-cols-2">
                       <div className="grid gap-2">
                         <Label htmlFor="check-in">Check-in</Label>
@@ -251,8 +256,11 @@ export default function BookingPage() {
                               disabled={(date) =>
                                 date < new Date() || isDateReserved(date)
                               }
-                              components={{
-                                day: ({ date }) => DayContent(date),
+                              modifiers={{
+                                reserved: (date) => isDateReserved(date),
+                              }}
+                              modifiersClassNames={{
+                                reserved: "bg-red-100 text-red-900 line-through opacity-70",
                               }}
                               initialFocus
                             />
@@ -414,13 +422,14 @@ export default function BookingPage() {
                       type="submit"
                       className="bg-green-600 hover:bg-green-700"
                       disabled={
-                        !checkIn || !checkOut || !name || !email || !phone
+                        !checkIn || !checkOut || !name || !email || !phone || isSubmitting
                       }
                     >
-                      Bekræft Bestilling
+                      {isSubmitting ? "Sender..." : "Bekræft Bestilling"}
                     </Button>
                   </div>
                 </form>
+                )}
               </CardContent>
             </Card>
           </div>
@@ -438,39 +447,32 @@ export default function BookingPage() {
                   <div className="flex justify-between text-sm">
                     <span>Check-in</span>
                     <span>
-                      {checkIn ? checkIn.toLocaleDateString() : "Not selected"}
+                      {submitSuccess && lastInquiry?.checkIn
+                        ? new Date(lastInquiry.checkIn).toLocaleDateString()
+                        : checkIn
+                        ? checkIn.toLocaleDateString()
+                        : "Not selected"}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Check-out</span>
                     <span>
-                      {checkOut
+                      {submitSuccess && lastInquiry?.checkOut
+                        ? new Date(lastInquiry.checkOut).toLocaleDateString()
+                        : checkOut
                         ? checkOut.toLocaleDateString()
                         : "Not selected"}
                     </span>
                   </div>
                   <div className="flex justify-between text-sm">
                     <span>Antal Gæster</span>
-                    <span>{guests}</span>
+                    <span>
+                      {submitSuccess && lastInquiry?.guests
+                        ? lastInquiry.guests
+                        : guests}
+                    </span>
                   </div>
                 </div>
-                {checkIn && checkOut && (
-                  <div className="pt-4 border-t">
-                    <div className="flex justify-between">
-                      <span className="font-medium">Total</span>
-                      <span className="font-medium">
-                        {calculateTotalPrice()} DKK
-                      </span>
-                    </div>
-                    <p className="mt-1 text-xs text-muted-foreground">
-                      {Math.ceil(
-                        (checkOut.getTime() - checkIn.getTime()) /
-                          (1000 * 60 * 60 * 24)
-                      )}{" "}
-                      nætter
-                    </p>
-                  </div>
-                )}
               </CardContent>
             </Card>
           </div>

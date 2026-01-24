@@ -5,6 +5,7 @@ import { Calendar, Info, MapPin, Star, Users } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { GoogleMap } from "@/components/google-map"
+import { HeroSlider } from "@/components/hero-slider"
 
 export default function Home() {
 // Update these coordinates to your actual summerhouse location
@@ -15,130 +16,72 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-white">
-      <header className="border-b">
-        <div className="container flex items-center justify-between h-16 px-4 mx-auto md:px-6">
-          <Link href="/" className="flex items-center gap-2">
-            <Image
-              src="/SommerhusLogo.jpg"
-              alt="Sommerhus Logo"
-              width={40} // Adjust the width as needed
-              height={40} // Adjust the height as needed
-              className="rounded-full" // Optional: Add styling if needed
-            />
-            <span className="text-xl font-semibold">Sommerhus Ophold</span>
-          </Link>
-
-          {/* Language Switcher with Flags */}
-          <div className="flex items-center gap-2">
-            <button
-              // onClick={() => console.log("Switch to Danish")}
-              className="w-8 h-8"
-              aria-label="Switch to Danish"
-            >
-              <Image
-                src="/flags/denmark.svg"
-                alt="Danish Flag"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-            </button>
-            <button
-              //onClick={() => console.log("Switch to English")}
-              className="w-8 h-8"
-              aria-label="Switch to English"
-            >
-              <Image
-                src="/flags/uk.svg"
-                alt="English Flag"
-                width={32}
-                height={32}
-                className="rounded-full"
-              />
-            </button>
-          </div>
-          {/*<nav className="hidden space-x-4 md:flex">
-            <Link href="/" className="text-sm font-medium hover:underline underline-offset-4">
-              Home
-            </Link>
-            <Link
-              href="/about"
-              className="text-sm font-medium text-muted-foreground hover:underline underline-offset-4"
-            >
-              About
-            </Link>
-            <Link
-              href="/contact"
-              className="text-sm font-medium text-muted-foreground hover:underline underline-offset-4"
-            >
-              Contact
-            </Link>
-          </nav> */}
-          <Link href={"/booking"}>
-            <Button
-              variant="outline"
-              size="sm"
-              className="hidden md:flex text-white font-bold colors-white bg-green-600 hover:bg-green-700"
-            >
-              Book Ophold
-            </Button>
-          </Link>
-        </div>
-      </header>
       <main>
-        <section className="py-12 md:py-16 lg:py-20">
-          <div className="container px-4 mx-auto md:px-6">
-            <div className="grid gap-6 lg:grid-cols-2 lg:gap-12">
-              <div className="space-y-4">
-                <h1 className="text-3xl font-bold tracking-tighter sm:text-4xl md:text-5xl">
+        {/* Hero Slider Section */}
+        <section className="relative">
+          <HeroSlider />
+          
+          {/* Content Overlay */}
+          <div className="absolute inset-0 flex items-center justify-center z-10">
+            <div className="container px-4 mx-auto md:px-6">
+              <div className="max-w-2xl mx-auto text-center text-white">
+                <h1 className="text-4xl font-bold tracking-tighter sm:text-5xl md:text-6xl mb-6">
                   Skønt Sommerhus I Dyreborg
                 </h1>
-                <div className="flex items-center gap-2 text-sm">
-                  <div className="flex items-center">
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
-                    <Star className="w-4 h-4 fill-yellow-400 text-yellow-400" />
+                
+                <div className="flex items-center justify-center gap-2 mb-6">
+                  <div className="flex items-center gap-1">
+                    <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
+                    <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
+                    <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
+                    <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
+                    <Star className="w-5 h-5 fill-yellow-300 text-yellow-300" />
                   </div>
-                  <span className="text-muted-foreground">
-                    (48 Anmeldelser)
+                  <span className="text-lg">
+                  
                   </span>
                 </div>
-                <div className="flex items-center gap-2 text-sm">
-                  <MapPin className="w-4 h-4 text-green-600" />
+
+                <div className="flex items-center justify-center gap-2 mb-6 text-lg">
+                  <MapPin className="w-5 h-5" />
                   <span>Faaborg, Danmark</span>
                 </div>
-                <p className="text-muted-foreground">
+
+                <p className="text-lg mb-8 text-white/90 max-w-xl mx-auto">
                   Book et ophold i vores fredelige sommerhus i dyreborg,
                   beliggende tæt på havet med en dejlig natur. Perfekt til
-                  familieferier eller en stille sommerhus tur med venner. Nyd
-                  den fantastiske udsigt over havet, og alle moderne faciliteter
-                  for et behageligt ophold.
+                  familieferier eller en stille sommerhus tur med venner.
                 </p>
-                <div className="flex flex-wrap gap-4">
-                  <div className="flex items-center gap-2">
-                    <Users className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">Plads til 6 personer</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">4 soveværelser</span>
-                  </div>
-                  <div className="flex items-center gap-2">
-                    <Info className="w-4 h-4 text-green-600" />
-                    <span className="text-sm">1 stort badeværelse</span>
-                  </div>
-                </div>
+
+                <Link href="/booking">
+                  <Button
+                    size="lg"
+                    className="bg-green-600 hover:bg-green-700 text-white font-bold"
+                  >
+                    <Calendar className="w-5 h-5 mr-2" />
+                    Tjek Tilgængelighed
+                  </Button>
+                </Link>
               </div>
-              <div className="relative aspect-video overflow-hidden rounded-xl lg:aspect-square">
-                <Image
-                  src="/Sommerhus_pic1.jpg?height=600&width=800"
-                  alt="Summerhouse exterior"
-                  fill
-                  className="object-cover"
-                  priority
-                />
+            </div>
+          </div>
+        </section>
+
+        {/* Features Section */}
+        <section className="py-12 bg-white">
+          <div className="container px-4 mx-auto md:px-6">
+            <div className="grid gap-8 md:grid-cols-3 text-center">
+              <div className="space-y-2">
+                <Users className="w-8 h-8 text-green-600 mx-auto" />
+                <h3 className="font-semibold">Plads til 6 personer</h3>
+              </div>
+              <div className="space-y-2">
+                <Info className="w-8 h-8 text-green-600 mx-auto" />
+                <h3 className="font-semibold">4 soveværelser</h3>
+              </div>
+              <div className="space-y-2">
+                <Info className="w-8 h-8 text-green-600 mx-auto" />
+                <h3 className="font-semibold">1 stort badeværelse</h3>
               </div>
             </div>
           </div>
