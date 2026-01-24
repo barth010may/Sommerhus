@@ -2,7 +2,13 @@
 import { MongoClient } from "mongodb"
 
 const uri = process.env.MONGODB_URI
-const options = {}
+const options = {
+  maxPoolSize: 10,
+  minPoolSize: 2,
+  maxIdleTimeMS: 30000,
+  serverSelectionTimeoutMS: 5000,
+  socketTimeoutMS: 45000,
+}
 
 if (!uri) {
   throw new Error("Please define the MONGODB_URI environment variable")
@@ -29,6 +35,6 @@ if (process.env.NODE_ENV === "development") {
 
 export async function connectToDatabase() {
   const client = await clientPromise
-  const db = client.db("Sommerhus") // You can specify db name if needed
+  const db = client.db("Sommerhus")
   return { client, db }
 }

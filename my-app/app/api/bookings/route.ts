@@ -1,9 +1,6 @@
 import { NextResponse } from "next/server";
-import { MongoClient, ObjectId } from "mongodb";
+import { ObjectId } from "mongodb";
 import { connectToDatabase } from "@/lib/mongodb";
-
-const uri = process.env.MONGODB_URI || "";
-const client = new MongoClient(uri);
 
 // GET all bookings
 export async function GET() {
@@ -26,8 +23,6 @@ export async function GET() {
       { error: "Failed to fetch bookings" },
       { status: 500 }
     );
-  } finally {
-    await client.close();
   }
 }
 
