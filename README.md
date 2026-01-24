@@ -4,21 +4,19 @@ A next.js booking website for our summerhouse rental.
 
 ## TODO:
 
-- [ ] Update landing page header to picture slider at the top (To create more attention to the house)
-- [ ] Update gmail API connection (If necessary)
+- [ ] Update page name in the browser tab. 
+- [x] Update landing page header to picture slider at the top (To create more attention to the house)
+- [x] Update gmail API connection (If necessary)
 - [x] Update calendar overview to include disabled reserved dates
 - [x] Add Google Maps link to show location on map
 - [x] Add proper database functionality
   - Retrieve data from mongodb ✅
   - Insert bookings into mongodb in correct format ✅
   - Delete bookings from the manage booking overview ✅
-- [ ] Connect admin login systemto mongodb for more secure login process
-- [ ] Setup environment variables for vulnerable information (usernames, passwords)
-- [ ] Adjust Pricing
-  - 6000 DKK for 1 uge
-  - 2500 DKK for en weekend
+- [x] Connect admin login systemto mongodb for more secure login process
+- [x] Setup environment variables for vulnerable information (usernames, passwords)
 - [ ] Add loading indicators for button presses
-- [ ] Update website with pictures
+- [x] Update website with pictures
 - [ ] Add english and German translated page
 - marketing possibilities for the summerhouse
 - [ ] Lav en Google Virksomhedsprofil
