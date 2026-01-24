@@ -61,6 +61,7 @@ export default function AdminPage() {
   const [notes, setNotes] = useState("");
   const [isAddingReservation, setIsAddingReservation] = useState(false);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [loginError, setLoginError] = useState<string | null>(null);
 
   // Check if user is authenticated on page load
   useEffect(() => {
@@ -92,22 +93,36 @@ export default function AdminPage() {
     }
   }, [reservations]);
 
-  const handleLogin = (e: React.FormEvent) => {
+  const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
+    setLoginError(null);
 
-    // In a real application, you would validate against a secure backend
-    // This is just a simple example - NEVER do authentication this way in production
-    if (username === "admin" && password === "password123") {
-      localStorage.setItem("adminAuthenticated", "true");
-      setIsAuthenticated(true);
-      toast({
-        title: "Login successful",
-        description: "Welcome to the admin dashboard",
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ username, password }),
       });
-    } else {
+
+      if (res.ok) {
+        localStorage.setItem("adminAuthenticated", "true");
+        setIsAuthenticated(true);
+        setUsername("");
+        setPassword("");
+        setLoginError(null);
+        toast({
+          title: "Login successful",
+          description: "Welcome to the admin dashboard",
+        });
+      } else {
+        setLoginError("Invalid username or password. Please try again.");
+        setPassword("");
+      }
+    } catch (error) {
+      setLoginError("An error occurred while logging in. Please try again.");
       toast({
-        title: "Login failed",
-        description: "Invalid username or password",
+        title: "Error",
+        description: "Failed to authenticate",
         variant: "destructive",
       });
     }
@@ -141,8 +156,7 @@ export default function AdminPage() {
       return;
     }
 
-    const newReservation: Reservation = {
-      id: crypto.randomUUID(),
+    const reservationData = {
       start: startDate.toISOString(),
       end: endDate.toISOString(),
       notes: notes || undefined,
@@ -152,16 +166,24 @@ export default function AdminPage() {
       const res = await fetch("/api/bookings", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(newReservation),
+        body: JSON.stringify(reservationData),
       });
 
       if (!res.ok) throw new Error("Failed to save reservation");
 
-      /*setReservations([...reservations, newReservation])
-      setStartDate(undefined)
-      setEndDate(undefined)
-      setNotes("")
-      setIsAddingReservation(false)*/
+      const data = await res.json();
+      const newReservation: Reservation = {
+        id: data.insertedId,
+        start: startDate.toISOString(),
+        end: endDate.toISOString(),
+        notes: notes || undefined,
+      };
+
+      setReservations([...reservations, newReservation]);
+      setStartDate(undefined);
+      setEndDate(undefined);
+      setNotes("");
+      setIsAddingReservation(false);
 
       toast({
         title: "Reservation added",
@@ -188,6 +210,18 @@ export default function AdminPage() {
         },
         body: JSON.stringify({ id }),
       });
+
+      if (!res.ok) {
+        throw new Error(`HTTP error! status: ${res.status}`);
+      }
+
+      setReservations(
+        reservations.filter((reservation) => reservation.id !== id)
+      );
+      toast({
+        title: "Reservation deleted",
+        description: "The reservation has been removed",
+      });
     } catch (error) {
       console.error("Failed to delete reservation:", error);
       toast({
@@ -195,15 +229,7 @@ export default function AdminPage() {
         description: "Could not delete reservation",
         variant: "destructive",
       });
-      return;
     }
-    setReservations(
-      reservations.filter((reservation) => reservation.id !== id)
-    );
-    toast({
-      title: "Reservation deleted",
-      description: "The reservation has been removed",
-    });
   };
 
   // Navigate to previous month
@@ -278,8 +304,14 @@ export default function AdminPage() {
                   value={password}
                   onChange={(e) => setPassword(e.target.value)}
                   required
+                  className={loginError ? "border-red-500" : ""}
                 />
               </div>
+              {loginError && (
+                <div className="rounded-lg bg-red-50 border border-red-200 p-3">
+                  <p className="text-sm text-red-700">{loginError}</p>
+                </div>
+              )}
               <Button type="submit" className="w-full">
                 Login
               </Button>
@@ -476,7 +508,7 @@ export default function AdminPage() {
 
       {/* Standalone Add Reservation Dialog */}
       <Dialog open={isAddingReservation} onOpenChange={setIsAddingReservation}>
-        <DialogContent className="sm:max-w-md">
+        <DialogContent className="sm:max-w-md max-h-[90vh] flex flex-col">
           <DialogHeader>
             <DialogTitle>Add New Reservation</DialogTitle>
             <DialogDescription>
@@ -484,7 +516,7 @@ export default function AdminPage() {
             </DialogDescription>
           </DialogHeader>
 
-          <div className="grid gap-6 py-4">
+          <div className="grid gap-6 py-4 overflow-y-auto flex-1">
             <div>
               <Label className="block mb-2">Start Date</Label>
               <Calendar
