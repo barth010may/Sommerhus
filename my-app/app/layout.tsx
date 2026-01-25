@@ -7,9 +7,12 @@ import { ThemeProvider } from "@/components/theme-provider"
 const inter = Inter({ subsets: ["latin"] })
 
 export const metadata = {
-  title: "SummerStay - Book Your Perfect Summerhouse Getaway",
-  description: "Book your dream summerhouse vacation with SummerStay. Enjoy lakeside views and relaxation.",
-    generator: 'v0.dev'
+  title: "Sommerhus i Dyreborg - Book et dejligt Sommerhus getaway",
+  description: "Book din drømme sommerhusferie med Sommerhus i Dyreborg. Nyd udsigt og afslapning.",
+  generator: 'v0.dev',
+  icons: {
+    icon: '/SommerhusLogo.jpg',
+  },
 }
 
 export default function RootLayout({

@@ -95,7 +95,7 @@ export default function Home() {
                 </h2>
                 <p className="text-muted-foreground">
                   Vores smukke sommerhus tilbyder den perfekte blanding af
-                  rustik charme og moderne komfort. Beliggende ved tæt på havet
+                  rustik charme og moderne komfort. Beliggende tæt på havet
                   med adgang til en dejlig sand strand, kan du nyde en betagende
                   udsigt og direkte adgang til svømning, fiskeri og sejlads.
                 </p>
@@ -103,7 +103,7 @@ export default function Home() {
                   Huset har fire hyggelige soveværelser, et fuldt udstyret
                   køkken, en rummelig stue med pejs og en stor terrasse, der er
                   perfekt til udendørs spisning og afslapning. Ejendommen
-                  inkluderer en indedørs boblebad og en traditionel finsk sauna.
+                  inkluderer et indedørs boblebad og en traditionel finsk sauna.
                 </p>
                 <div className="grid gap-4 sm:grid-cols-2">
                   <Card>
@@ -125,9 +125,8 @@ export default function Home() {
                     <CardContent className="p-4">
                       <h3 className="font-semibold">Husregler</h3>
                       <ul className="mt-2 space-y-1 text-sm">
-                        <li>Check-in: 15:00 - 20:00</li>
+                        <li>Check-in: 14:00 - 18:00</li>
                         <li>Check-ud: 11:00</li>
-                        <li>Rygning forbudt</li>
                         <li>Ingen fester eller større arrangementer</li>
                         <li>Kæledyr tilladt (med forudgående godkendelse)</li>
                       </ul>
