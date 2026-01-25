@@ -5,10 +5,11 @@ import Image from "next/image";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const images = [
-  "/Sommerhus_pic1.jpg",
+  "/stue.jpeg",
   "/master.jpeg",
   "/kokken.jpeg",
   "/bad.jpeg",
+  "/Sommerhus_pic1.jpg"
 ];
 
 export function HeroSlider() {

@@ -190,8 +190,7 @@ export default function BookingPage() {
               <CardHeader>
                 <CardTitle>Booking Detaljer</CardTitle>
                 <CardDescription>
-                  Vælg dine ønskede datoer og angiv dine oplysninger for at
-                  booke sommerhuset.
+                  Vælg dine ønskede datoer og angiv dine oplysninger, så kontakter vi dig vedrørende din booking.
                 </CardDescription>
               </CardHeader>
               <CardContent>
